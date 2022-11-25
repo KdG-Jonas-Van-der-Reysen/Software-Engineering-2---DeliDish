@@ -1,4 +1,18 @@
 .gradle/
 .idea/
-**/build/
-**/out/
+build/
+out/
+
+# Ignore Gradle GUI config
+gradle-app.setting
+
+# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
+*.jar
+
+# Cache of project
+.gradletasknamecache
+.gradle
+build/
+
+#Lock files
+*.lck
