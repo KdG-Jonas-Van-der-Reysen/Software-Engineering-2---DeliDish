@@ -1,5 +1,7 @@
 package be.kdg.delidish.business.domain.person;
 
+import java.time.LocalDateTime;
+
 public class DeliveryPointEvent {
 
 	private LocalDateTime time;

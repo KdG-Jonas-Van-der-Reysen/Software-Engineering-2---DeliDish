@@ -10,6 +10,7 @@ public class Order {
 	private List<OrderEvent> orderEvents;
 	Customer customer;
 	Courier courier;
+
 	private int orderId;
 	private Address deliveryAddress;
 	private String deliveryInstructions;
@@ -21,7 +22,7 @@ public class Order {
 	 * @param courier
 	 */
 	public void assignCourier(Courier courier) {
-		
+
 		
 	}
 
@@ -33,5 +34,23 @@ public class Order {
 		
 		
 	}
+
+	public OrderEvent getLastEvent() {
+		// Return the last event from the orderEvents list
+		return orderEvents.get(orderEvents.size() - 1);
+	}
+
+	/**
+	 *
+	 * @return orderId
+	 */
+	public int getOrderId() {
+		return orderId;
+	}
+	public void setOrderId(int orderId) {
+		this.orderId = orderId;
+	}
+
+
 
 }

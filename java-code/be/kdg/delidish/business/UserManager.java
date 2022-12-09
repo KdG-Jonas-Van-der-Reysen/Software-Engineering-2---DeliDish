@@ -5,12 +5,8 @@ import be.kdg.delidish.business.domain.person.*;
 
 public class UserManager {
 
-	private CourierRepo courierRepository;
+	private CourierRepository courierRepository;
 
-	/**
-	 * 
-	 * @param courier
-	 */
 	public void orderAccepted(Courier courier) {
 		
 		

@@ -9,4 +9,7 @@ public class OrderlLine {
 	private int quantity;
 	private String remark;
 
+	public List<Dish> getDishes() {
+		return dishes;
+	}
 }
