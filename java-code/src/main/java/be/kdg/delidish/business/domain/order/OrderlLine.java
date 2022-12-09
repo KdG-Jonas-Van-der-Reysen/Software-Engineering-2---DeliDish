@@ -1,7 +1,8 @@
 package be.kdg.delidish.business.domain.order;
 
-import java.util.*;
-import be.kdg.delidish.business.domain.restaurant.*;
+import be.kdg.delidish.business.domain.restaurant.Dish;
+
+import java.util.List;
 
 public class OrderlLine {
 

@@ -1,6 +1,9 @@
 package be.kdg.delidish.business.domain.order;
 
-import be.kdg.delidish.business.domain.person.*;
+import be.kdg.delidish.business.domain.person.DeliveryPointEvent;
+import be.kdg.delidish.business.domain.person.EventType;
+
+import java.time.LocalDateTime;
 
 import java.time.LocalDateTime;
 

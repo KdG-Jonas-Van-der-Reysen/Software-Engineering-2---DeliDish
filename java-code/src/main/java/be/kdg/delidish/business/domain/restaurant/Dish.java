@@ -1,7 +1,8 @@
 package be.kdg.delidish.business.domain.restaurant;
 
-import java.util.*;
-import be.kdg.delidish.business.domain.payment.*;
+import be.kdg.delidish.business.domain.payment.Money;
+
+import java.util.List;
 
 public class Dish {
 

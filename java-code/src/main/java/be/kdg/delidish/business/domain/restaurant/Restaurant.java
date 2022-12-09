@@ -1,7 +1,8 @@
 package be.kdg.delidish.business.domain.restaurant;
 
-import java.util.*;
-import be.kdg.delidish.business.domain.common.*;
+import be.kdg.delidish.business.domain.common.ContactInfo;
+
+import java.util.List;
 
 public class Restaurant {
 
