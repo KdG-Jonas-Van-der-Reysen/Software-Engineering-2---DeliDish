@@ -8,8 +8,8 @@ public class Order {
 
 	private List<OrderlLine> orderLines;
 	private List<OrderEvent> orderEvents;
-	Customer customer;
-	Courier courier;
+	private Customer customer;
+	private Courier courier;
 
 	private int orderId;
 	private Address deliveryAddress;
@@ -36,8 +36,12 @@ public class Order {
 	}
 
 	public OrderEvent getLastEvent() {
-		// Return the last event from the orderEvents list
+		// Return the last event from the orderEvents list TODO: JONAS zelf gemaakt? Nodig?
 		return orderEvents.get(orderEvents.size() - 1);
+	}
+
+	public OrderState getState() {
+		return state;
 	}
 
 	/**

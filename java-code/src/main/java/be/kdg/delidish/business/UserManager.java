@@ -1,9 +1,10 @@
 package be.kdg.delidish.business;
 
 import be.kdg.delidish.business.domain.person.Courier;
-import be.kdg.delidish.persistence.CourierRepo;
+import be.kdg.delidish.persistence.CourierRepository;
 
-public class UserManager {
+public enum UserManager {
+	INSTANCE;
 
 	private CourierRepository courierRepository;
 

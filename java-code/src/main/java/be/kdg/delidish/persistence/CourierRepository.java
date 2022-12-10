@@ -10,7 +10,6 @@ public enum CourierRepository {
     INSTANCE;
     private Map<Integer, Courier> map = new HashMap<>();
 
-
     public Courier get(int id) {
         return map.get(id);
     }
