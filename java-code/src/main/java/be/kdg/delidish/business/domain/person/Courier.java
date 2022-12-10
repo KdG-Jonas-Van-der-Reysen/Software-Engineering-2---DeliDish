@@ -12,7 +12,13 @@ public class Courier extends Person {
 	private List<DeliveryPointEvent> deliveryPointEvents;
 	private boolean isAvailable;
 
-
+	public Courier(String firstName, String lastName, Partner partner, List<DeliveryPointEvent> deliveryPointEvents, boolean isAvailable, Position currentPosition) {
+		super(firstName, lastName);
+		this.partner = partner;
+		this.deliveryPointEvents = deliveryPointEvents;
+		this.isAvailable = isAvailable;
+		this.currentPosition = currentPosition;
+	}
 
 	public void setCurrentPosition(Position currentPosition) {
 		this.currentPosition = currentPosition;
@@ -20,20 +26,14 @@ public class Courier extends Person {
 
 	private Position currentPosition;
 
-	public Courier(Partner partner, List<DeliveryPointEvent> deliveryPointEvents, boolean isAvailable, Position currentPosition) {
-		this.partner = partner;
-		this.deliveryPointEvents = deliveryPointEvents;
-		this.isAvailable = isAvailable;
-		this.currentPosition = currentPosition;
-	}
+
 
 	/**
 	 * 
 	 * @param available
 	 */
 	public void setAvailable(boolean available) {
-		
-		
+		this.isAvailable = available;		
 	}
 
 	/**
@@ -58,7 +58,7 @@ public class Courier extends Person {
 		if (isAvailable) {
 			// Wanneer is de bestelling klaar?
 			int orderProductionTime = order.getProductionTime();
-			LocalDateTime orderKlaar = order.getPlacedAt().plusMinutes(orderProductionTime);
+			LocalDateTime orderKlaar = order.getTimePlaced().plusMinutes(orderProductionTime);
 
 			// Positie van restaurant ophalen
 			Position restaurantPosition = order.getRestaurant().getContactInfo().getAddress().getPosition();
@@ -69,18 +69,13 @@ public class Courier extends Person {
 			LocalDateTime koerierTerPlaatse = LocalDateTime.now().plusMinutes(travelTimeInMinutes);
 
 			// Koerier moet ter plaatse zijn voordat het order klaar is
-			if (koerierTerPlaatse.isBefore(orderKlaar)) {
-				return true;
-			} else {
-				return false;
-			}
-
+			return koerierTerPlaatse.isBefore(orderKlaar);
 		} else {
 			return false;
 		}
 	}
-
-	public boolean isAboveAverageDeliverer(){
-		return false;//TODO
+	
+	public int getTotalDeliveryPoints() {
+		return deliveryPointEvents.stream().mapToInt(DeliveryPointEvent::getPoints).sum();
 	}
 }

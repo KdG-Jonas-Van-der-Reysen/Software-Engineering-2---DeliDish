@@ -4,4 +4,7 @@ public class Partner {
 
 	private String accountNr;
 
+	public Partner(String accountNr) {
+		this.accountNr = accountNr;
+	}
 }

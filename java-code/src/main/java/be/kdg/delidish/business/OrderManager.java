@@ -36,7 +36,7 @@ public enum OrderManager {
 
         Courier courier = courierRepository.get(courierId);
         if (courier == null) {   //if the courier is invalid return empty list
-            return orders;//TODO nog geen empty list
+            return orders;
         }
 
         // Per order
@@ -47,18 +47,17 @@ public enum OrderManager {
             if (applicableCouriers.contains(courier)) {
                 // Hoe lang geleden is het order geplaatst?
                 // Langer dan 5 min geleden --> order is available voor deze koerier
-                if (order.orderPlaceDate().isBefore(LocalDateTime.now().minusMinutes(5))) { //first event time is time order is placed
+                if (order.getTimePlaced().isBefore(LocalDateTime.now().minusMinutes(5))) {
                     return true;
                 } else {
                     // gemiddelde berekenen van alle in aanmerking komende koeriers
                     // Hoger dan gemiddelde? --> order is available voor deze koerier
-                    return courier.isAboveAverageDeliverer();
+                    return courier.getTotalDeliveryPoints() >= order.getAverageDeliveryPoints(applicableCouriers);
                 }
             }
             return false;
         }).toList();
     }
-
 
     // Lijst maken van koeriers die in aanmerking komen voor een order
     private List<Courier> getApplicableCouriersForOrder(Order order) {

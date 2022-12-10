@@ -6,4 +6,7 @@ public class Customer extends Person {
 
 	private Address deliveryAdresses;
 
+	public Customer(String firstName, String lastName) {
+		super(firstName, lastName);
+	}
 }

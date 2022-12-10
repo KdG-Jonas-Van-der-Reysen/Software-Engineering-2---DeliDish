@@ -18,4 +18,7 @@ public class DeliveryPointEvent {
 		
 	}
 
+	public int getPoints() {
+		return points;
+	}
 }

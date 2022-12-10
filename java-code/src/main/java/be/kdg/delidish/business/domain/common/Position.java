@@ -5,6 +5,11 @@ public class Position {
     private int longitude;
     private int lattitude;
 
+    public Position(int longitude, int lattitude) {
+        this.longitude = longitude;
+        this.lattitude = lattitude;
+    }
+
     // Method to calculate distance in km between two positions
     public double calculateDistance(Position position) {
         // Don't worry, I didn't write this myself either. Here's why it (apparently) works:

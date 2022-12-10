@@ -2,6 +2,7 @@ package be.kdg.delidish.persistence;
 
 import be.kdg.delidish.business.domain.person.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,10 +17,10 @@ public enum CourierRepository {
 
     // getAll
     public List<Courier> getAll() {
-        return (List<Courier>) map.values();
+        return new ArrayList<>(map.values());
     }
 
-   public void update(Courier courier) {
+    public void update(Courier courier) {
         map.put(courier.getPersonId(), courier);
     }
 
@@ -30,7 +31,7 @@ public enum CourierRepository {
 
     public Courier add(Courier courier) {
         // Set the id of the courier
-        courier.setPersonId(map.size() + 1);
+        courier.setPersonId(map.size());
         map.put(courier.getPersonId(), courier);
 
         return courier;
