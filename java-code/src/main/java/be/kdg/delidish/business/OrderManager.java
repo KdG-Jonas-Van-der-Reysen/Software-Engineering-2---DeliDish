@@ -64,5 +64,11 @@ public enum OrderManager {
         // Alle koeriers ophalen en filteren op het volgende
         return courierRepository.getAll().stream().filter(courier -> courier.willArriveInTimeForOrder(order)).toList();
     }
+
+
+
+    public void addOrder(Order order) {
+        orderRepository.add(order);
+    }
 }
 

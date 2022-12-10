@@ -3,6 +3,7 @@ package be.kdg.delidish.application;
 import be.kdg.delidish.business.OrderManager;
 import be.kdg.delidish.business.UserManager;
 import be.kdg.delidish.business.domain.order.Order;
+import be.kdg.delidish.business.domain.person.Courier;
 
 import java.util.List;
 
@@ -32,4 +33,15 @@ public class DeliveryController {
 		return orderManager.getAvailableOrders(courierId);
 	}
 
+	public void addCourier(Courier courier) {
+		userManager.addCourier(courier);
+	}
+
+	public void addOrder(Order order) {
+		orderManager.addOrder(order);
+	}
+
+	public Courier getCourier(int id) {
+		return userManager.getCourier(id);
+	}
 }

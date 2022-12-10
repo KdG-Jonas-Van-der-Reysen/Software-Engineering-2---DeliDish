@@ -12,7 +12,6 @@ import be.kdg.delidish.business.domain.person.DeliveryPointEvent;
 import be.kdg.delidish.business.domain.person.Partner;
 import be.kdg.delidish.business.domain.restaurant.Dish;
 import be.kdg.delidish.business.domain.restaurant.Restaurant;
-import be.kdg.delidish.persistence.CourierRepository;
 import be.kdg.delidish.persistence.OrderRepository;
 
 import java.time.LocalDateTime;
@@ -25,44 +24,43 @@ public class Main {
         DeliveryController controller = DeliveryController.getInstance();
 
         // Repository seeden
-        Courier frits = CourierRepository.INSTANCE.add(
-                new Courier(
-                        "Frits",
-                        "Zonder ballekes",
-                        new Partner("zdzdf965"),
-                        new ArrayList<DeliveryPointEvent>(),
-                        true,
-                        new Position(1, 2)
-                )
-        );
+        controller.addCourier(new Courier(
+                "Frits",
+                "Zonder ballekes",
+                new Partner("zdzdf965"),
+                new ArrayList<DeliveryPointEvent>(),
+                true,
+                new Position(1, 2)
+        ));
+
 
         List<Dish> ballekesDishes = new ArrayList<>();
         List<OrderLine> orderlinesBallekes = new ArrayList<>();
         ballekesDishes.add(new Dish(30, "ballekes in witte saus"));
         orderlinesBallekes.add(new OrderLine(ballekesDishes, 5));
 
-        OrderRepository.INSTANCE.add(
-                new Order(
-                        new Restaurant(
-                                "Balls & Glory",
-                                new ContactInfo(
-                                        new Address(
-                                                null,
-                                                null,
-                                                "1",
-                                                new Position(1, 2),
-                                                "",
-                                                0
-                                        ),
-                                        "info@ballsnglory.com",
-                                        "+32 475 37 92 10"
-                                )
-                        ),
-                        LocalDateTime.now().minusMinutes(6),
-                        OrderState.ORDER_PLACED,
-                        orderlinesBallekes
-                )
-        );
+        controller.addOrder(new Order(
+                new Restaurant(
+                        "Balls & Glory",
+                        new ContactInfo(
+                                new Address(
+                                        null,
+                                        null,
+                                        "1",
+                                        new Position(1, 2),
+                                        "",
+                                        0
+                                ),
+                                "info@ballsnglory.com",
+                                "+32 475 37 92 10"
+                        )
+                ),
+                LocalDateTime.now().minusMinutes(6),
+                OrderState.ORDER_PLACED,
+                orderlinesBallekes
+        ));
+
+        Courier frits = controller.getCourier(0);
 
         // Koerier
         System.out.println("Koerier " + frits.getFullName() + " vraagt een lijst met de beschikbare orders op. Hij krijgt deze orders");
