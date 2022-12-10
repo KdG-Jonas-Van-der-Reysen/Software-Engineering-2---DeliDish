@@ -12,7 +12,7 @@ import java.util.List;
 public enum OrderManager {
     INSTANCE;
 
-	private OrderRepository orderRepository = OrderRepository.INSTANCE;
+    private OrderRepository orderRepository = OrderRepository.INSTANCE;
     private CourierRepository courierRepository = CourierRepository.INSTANCE;
 
     /**
@@ -31,11 +31,39 @@ public enum OrderManager {
     }
 
     public List<Order> getAvailableOrders(int courierId) {
-        return orderRepository.getAll()
-                .stream()
-                .filter(order -> order.getState().equals(OrderState.ORDER_PLACED))
-                .filter(order -> order.getLastEvent().getTime().isBefore(LocalDateTime.now().minusMinutes(5)))
-                .toList();
+        // Eerst alle orders opvragen en filteren op status ORDER_PLACED --> Dat zijn alle orders die nog geleverd moeten worden
+        List<Order> orders = orderRepository.getAll().stream().filter(order -> order.getState() == OrderState.ORDER_PLACED).toList();
+
+        Courier courier = courierRepository.get(courierId);
+        if (courier == null) {   //if the courier is invalid return empty list
+            return orders;//TODO nog geen empty list
+        }
+
+        // Per order
+        // Lijst ophalen van in aanmerking komende koeriers per order (getApplicableCouriersForOrder)
+        return orders.stream().filter(order -> {
+            List<Courier> applicableCouriers = getApplicableCouriersForOrder(order);
+            // --> Zit onze koerier erbij?
+            if (applicableCouriers.contains(courier)) {
+                // Hoe lang geleden is het order geplaatst?
+                // Langer dan 5 min geleden --> order is available voor deze koerier
+                if (order.orderPlaceDate().isBefore(LocalDateTime.now().minusMinutes(5))) { //first event time is time order is placed
+                    return true;
+                } else {
+                    // gemiddelde berekenen van alle in aanmerking komende koeriers
+                    // Hoger dan gemiddelde? --> order is available voor deze koerier
+                    return courier.isAboveAverageDeliverer();
+                }
+            }
+            return false;
+        }).toList();
+    }
+
+
+    // Lijst maken van koeriers die in aanmerking komen voor een order
+    private List<Courier> getApplicableCouriersForOrder(Order order) {
+        // Alle koeriers ophalen en filteren op het volgende
+        return courierRepository.getAll().stream().filter(courier -> courier.willArriveInTimeForOrder(order)).toList();
     }
 }
 

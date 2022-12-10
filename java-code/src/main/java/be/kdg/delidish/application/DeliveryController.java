@@ -23,11 +23,7 @@ public class DeliveryController {
 		}
 		return instance;
 	}
-
-	/**
-	 * 
-	 * @param orderId TODO JONAS 1 parameter here / 2 parameter daar?
-	 */
+	
 	public void selectDelivery(int orderId, int courierId) {
 		orderManager.assignOrder(orderId, courierId);
 	}

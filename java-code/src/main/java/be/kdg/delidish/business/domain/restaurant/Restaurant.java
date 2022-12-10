@@ -12,4 +12,7 @@ public class Restaurant {
 	private OpeningPeriod[] openingHours;
 	private String bankAccountNr;
 
+	public ContactInfo getContactInfo() {
+		return contactInfo;
+	}
 }

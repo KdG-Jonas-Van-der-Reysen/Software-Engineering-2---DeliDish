@@ -15,7 +15,7 @@ public class Dish {
 	private Allergen[] allergens;
 	private boolean orderable;
 
-	public int getMaximumDeliveryTime() {
-		return maximumDeliveryTime;
+	public int getProductionTime() {
+		return productionTime;
 	}
 }
