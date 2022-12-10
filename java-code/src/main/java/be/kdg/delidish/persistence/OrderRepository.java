@@ -18,7 +18,7 @@ public enum OrderRepository {
 	}
 
 	public List<Order> getAll() {
-		return (List<Order>) map.values();
+		return new ArrayList(map.values());
 	}
 
 	public void update(Order order) {

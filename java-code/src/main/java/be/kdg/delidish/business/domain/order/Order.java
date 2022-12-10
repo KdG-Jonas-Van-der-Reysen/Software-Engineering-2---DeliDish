@@ -22,8 +22,7 @@ public class Order {
 	 * @param courier
 	 */
 	public void assignCourier(Courier courier) {
-
-		
+		this.courier = courier;
 	}
 
 	/**

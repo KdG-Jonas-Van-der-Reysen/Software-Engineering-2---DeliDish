@@ -10,7 +10,7 @@ group 'be.kdg.delidish'
 version '1.0'
 
 repositories {
-    mavenCentral();
+    mavenCentral()
 }
 
 dependencies {
