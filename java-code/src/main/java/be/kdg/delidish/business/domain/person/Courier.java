@@ -26,23 +26,13 @@ public class Courier extends Person {
 
 	private Position currentPosition;
 
-
-
-	/**
-	 * 
-	 * @param available
-	 */
 	public void setAvailable(boolean available) {
 		this.isAvailable = available;		
 	}
 
-	/**
-	 * 
-	 * @param type
-	 */
 	public void addPointEvent(EventType type) {
-		
-		
+		DeliveryPointEvent dpe = new DeliveryPointEvent(5,type);//TODO: 5 punten goed?
+		deliveryPointEvents.add(dpe);
 	}
 
 	public boolean isAvailable() {

@@ -1,11 +1,14 @@
 package be.kdg.delidish.business.domain.order;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.*;
-import be.kdg.delidish.business.domain.person.*;
-import be.kdg.delidish.business.domain.common.*;
+import be.kdg.delidish.business.domain.common.Address;
+import be.kdg.delidish.business.domain.person.Courier;
+import be.kdg.delidish.business.domain.person.Customer;
 import be.kdg.delidish.business.domain.restaurant.Restaurant;
+
+import java.time.LocalDateTime;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
 
 public class Order {
 
@@ -32,7 +35,7 @@ public class Order {
 	}
 
 	public void addEvent(OrderState os) {
-		state = os;	//TODO klopt dit?
+		state = os;
 	}
 
 	public OrderState getState() {

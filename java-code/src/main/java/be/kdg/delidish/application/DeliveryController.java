@@ -27,6 +27,7 @@ public class DeliveryController {
 	
 	public void selectDelivery(int orderId, int courierId) {
 		orderManager.assignOrder(orderId, courierId);
+		userManager.orderAccepted(userManager.getCourier(courierId));
 	}
 
 	public List<Order> showAvailableOrders(int courierId) {
