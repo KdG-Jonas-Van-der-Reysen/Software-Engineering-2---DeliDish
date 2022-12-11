@@ -60,7 +60,6 @@ public class Order {
 		// Get order line with the highest production time
 		Optional<OrderLine> maxProductionTime = orderLines.stream().max(Comparator.comparingInt(OrderLine::getProductionTime));
 
-		// Gaat nooit hierin komen maar kijk, IntelliJ klaagt anders
 		return maxProductionTime.map(OrderLine::getProductionTime).orElse(0);
 	}
 
@@ -68,7 +67,6 @@ public class Order {
 		// Eerst alle applicable koeriers ophalen -> gemiddelde berekenen
 		return (int) applicableCouriers.stream().mapToDouble(Courier::getTotalDeliveryPoints).average().getAsDouble();
 
-		// return averageDeliveryPoints;
 	}
 
 	public LocalDateTime getTimePlaced() {

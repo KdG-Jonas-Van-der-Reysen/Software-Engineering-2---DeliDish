@@ -35,7 +35,7 @@ public enum OrderManager {
         List<Order> orders = orderRepository.getAll().stream().filter(order -> order.getState() == OrderState.ORDER_PLACED).toList();
 
         Courier courier = courierRepository.get(courierId);
-        if (courier == null) {   //if the courier is invalid return empty list
+        if (courier == null) {   //if the c<ourier is invalid return empty list
             return orders;
         }
 
