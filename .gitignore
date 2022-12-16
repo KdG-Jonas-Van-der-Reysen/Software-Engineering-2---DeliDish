@@ -6,6 +6,7 @@ out/
 .jar
 .properties
 .gradle
+.iml
 
 #Lock files
 .lck

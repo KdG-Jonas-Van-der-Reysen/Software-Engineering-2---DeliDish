@@ -1,3 +1,4 @@
 rootProject.name = 'delidish'
-include 'java-code'
+include 'opdracht3'
+include 'opdracht4'
 

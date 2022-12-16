@@ -3,9 +3,14 @@ package be.kdg.delidish.bddtests;
 import be.kdg.delidish.application.OrderController;
 import be.kdg.delidish.repositories.CityRepository;
 import be.kdg.delidish.repositories.CourierRepository;
-import org.springframework.boot.test.context.SpringBootTest;
-
+import io.cucumber.datatable.DataTable;
+import io.cucumber.java.PendingException;
 import io.cucumber.java.en.And;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
+import io.cucumber.spring.CucumberContextConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Map;
 
@@ -23,10 +28,10 @@ public class BDDTests {
         this.cityRepository = cityRepository;
     }
 
-    @Given("^cities:$")
-    public void cities(Datatable dataTable) {
+    @Given("cities")
+    public void cities(DataTable dataTable) {
         for (Map<String, String> map: dataTable.asMaps()) {
-            cityRepository.save(new City(map.get("postal"), map.get("name"), map.get("country")));
+            //cityRepository.save(new City(map.get("postal"), map.get("name"), map.get("country")));
         }
     }
 
@@ -53,7 +58,7 @@ public class BDDTests {
     @Given("^an order with description \"([^\"]*)\" for dish with id (\\d+) happened (\\d+) minutes in the past and has state \"([^\"]*)\" placed by customer (\\d+)$")
     public void anOrderWithDescriptionForDishWithIdHappenedMinutesInThePastAndHasStatePlacedByCustomer(String arg0, int arg1, int arg2, String arg3, int arg4) throws Throwable {
         // Write code here that turns the phrase above into concrete actions
-        throw new cucumber.api.PendingException();
+        throw new PendingException();
     }
 
     @And("^Courier (\\d+) is active and has (\\d+) deliveryPoints$")
@@ -79,7 +84,7 @@ public class BDDTests {
     @And("^The first delivery of the deliverylist has description \"([^\"]*)\"$")
     public void theFirstDeliveryOfTheDeliverylistHasDescription(String arg0) throws Throwable {
         // Write code here that turns the phrase above into concrete actions
-        throw new cucumber.api.PendingException();
+        throw new PendingException();
     }
 
     @And("^Courier (\\d+) has position (\\d+)\\.(\\d+) (\\d+)\\.(\\d+)$")
@@ -113,7 +118,7 @@ public class BDDTests {
     @Given("^an order with description \"([^\"]*)\" for dish with index (\\d+) and dish with index (\\d+) happened (\\d+) minutes in the past and has state \"([^\"]*)\" placed by customer (\\d+)$")
     public void anOrderWithDescriptionForDishWithIndexAndDishWithIndexHappenedMinutesInThePastAndHasStatePlacedByCustomer(String arg0, int arg1, int arg2, int arg3, String arg4, int arg5) throws Throwable {
         // Write code here that turns the phrase above into concrete actions
-        throw new cucumber.api.PendingException();
+        throw new PendingException();
     }
 
     @And("^Courier (\\d+) has an deliveryPoint record with type 'ORDER_PICKUP_LATE' with -(\\d+) points$")
