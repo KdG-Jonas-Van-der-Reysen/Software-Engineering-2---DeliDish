@@ -4,8 +4,9 @@ plugins {
     id("io.spring.dependency-management") version "1.1.0"
 }
 
-group = "be.kdg"
-version = "0.0.1-SNAPSHOT"
+group "DeliDish-opdracht4"
+version "1.0"
+
 java.sourceCompatibility = JavaVersion.VERSION_17
 var cucumberVersion = "7.5.0"
 

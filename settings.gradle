@@ -1,4 +1,5 @@
 rootProject.name = 'delidish'
 include 'opdracht3'
 include 'opdracht4'
+include 'opdracht2'
 
