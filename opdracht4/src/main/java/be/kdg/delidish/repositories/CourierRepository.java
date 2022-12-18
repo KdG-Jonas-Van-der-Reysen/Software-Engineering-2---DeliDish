@@ -1,7 +1,7 @@
 package be.kdg.delidish.repositories;
 
-import org.springframework.stereotype.Repository;
+import be.kdg.delidish.business.domain.person.Courier;
 
-@Repository
-public class CourierRepository {
+public interface CourierRepository extends Repository<Integer, Courier>{
 }
+

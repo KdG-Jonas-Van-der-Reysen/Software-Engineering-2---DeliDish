@@ -1,11 +1,7 @@
 package be.kdg.delidish.repositories;
 
-import be.kdg.delidish.business.domain.cities.City;
-import org.springframework.stereotype.Repository;
+import be.kdg.delidish.business.domain.common.City;
 
-@Repository
-public class CityRepository {
-    public void save(City city) {
 
-    }
+public interface CityRepository extends Repository<Integer, City> {
 }
