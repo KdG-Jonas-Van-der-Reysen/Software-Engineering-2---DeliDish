@@ -58,10 +58,9 @@ public class OrderManager {
     public List<Order> getAvailableOrders(int courierId) {
         // Eerst alle orders opvragen en filteren op status ORDER_PLACED --> Dat zijn alle orders die nog geleverd moeten worden
         List<Order> orders = orderRepository.getAll().stream().filter(order -> order.getState() == OrderState.ORDER_PLACED).toList();
-        assert !orders.isEmpty();
 
         Courier courier = courierRepository.findById(courierId);
-        if (courier == null) {   //if the c<ourier is invalid return empty list
+        if (courier == null) {   //if the courier is invalid return empty list
             return orders;
         }
 

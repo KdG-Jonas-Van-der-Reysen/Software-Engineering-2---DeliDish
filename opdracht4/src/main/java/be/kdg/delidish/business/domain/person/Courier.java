@@ -10,7 +10,7 @@ public class Courier extends Person {
 
 	private Partner partner;
 	private List<DeliveryPointEvent> deliveryPointEvents;
-	private boolean isAvailable;
+	private boolean isAvailable;//TODO gebruiken
 
 	public Courier(String firstName, String lastName, Partner partner, List<DeliveryPointEvent> deliveryPointEvents, boolean isAvailable, Position currentPosition) {
 		super(firstName, lastName);
@@ -55,8 +55,7 @@ public class Courier extends Person {
 		// Koerier moet beschikbaar zijn
 		if (isAvailable) {
 			// Wanneer is de bestelling klaar?
-			int orderProductionTime = order.getProductionTime();
-			LocalDateTime orderKlaar = order.getTimePlaced().plusMinutes(orderProductionTime);
+			LocalDateTime orderKlaar = order.getTimePlaced().plusMinutes(order.getProductionTime());
 
 			// Positie van restaurant ophalen
 			Position restaurantPosition = order.getRestaurant().getContactInfo().getAddress().getPosition();

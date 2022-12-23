@@ -75,7 +75,7 @@ public class BDDTests {
     @Given("^restaurants:$")
     public void restaurants(DataTable dataTable) {
         for (Map<String, String> map : dataTable.asMaps()) {
-            Position restaurantPosition = new Position(Double.parseDouble(map.get("adress_long")), Double.parseDouble(map.get("adress_lat")));
+            Position restaurantPosition = new Position(Double.parseDouble(map.get("adress_lat")), Double.parseDouble(map.get("adress_long")));
             Address restaurantAddress = new Address(
                     cityRepository.findById(Integer.parseInt(map.get("city"))),
                     "",
@@ -86,7 +86,7 @@ public class BDDTests {
 
             ContactInfo contactInfo = new ContactInfo(restaurantAddress, "geen@email.com", "geen tel");
 
-            restaurantRepository.insert(restaurantRepository.getNextAvailableId(), new Restaurant(map.get("name"), contactInfo));
+            restaurantRepository.insert(restaurantRepository.getNextAvailableId(), new Restaurant(map.get("Name"), contactInfo));
 
         }
     }
@@ -142,7 +142,6 @@ public class BDDTests {
 
             courier.setPersonId(courierRepository.getNextAvailableId());
             courierRepository.insert(courier.getPersonId(), courier);
-
         }
     }
 
@@ -215,7 +214,7 @@ public class BDDTests {
     @Then("^Courier gets an empty list$")
     public void courierGetsAnEmptyList() {
         // Check if list is empty
-        assertEquals(availableDeliveries.size(), 0);
+        assertEquals(0, availableDeliveries.size());
     }
 
     @Then("^Courier gets a deliverylist with (\\d+) order$")
@@ -253,6 +252,7 @@ public class BDDTests {
 
     @Given("^An order with description \"([^\"]*)\" for dish with index (\\d+) and dish with index (\\d+) happened (\\d+) minutes in the past and has state \"([^\"]*)\" placed by customer (\\d+)$")
     public void anOrderWithDescriptionForDishWithIndexAndDishWithIndexHappenedMinutesInThePastAndHasStatePlacedByCustomer(String description, int firstDishId, int secondDishId, int minutesAgo, String orderState, int customerId) {
+        orderRepository.clear();
 
         // Get the dishes
         Dish dish1 = dishRepository.findById(firstDishId);

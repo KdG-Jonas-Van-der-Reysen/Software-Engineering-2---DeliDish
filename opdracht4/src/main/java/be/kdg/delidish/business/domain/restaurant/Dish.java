@@ -42,6 +42,7 @@ public class Dish {
     }
 
     public int getMinutesBeforeCold() {
+        System.out.println(productionTime + " " + maximumDeliveryTime);
         return productionTime + maximumDeliveryTime;
     }
 

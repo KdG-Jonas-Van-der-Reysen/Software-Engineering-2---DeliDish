@@ -9,12 +9,12 @@ import org.locationtech.spatial4j.shape.impl.PointImpl;
 
 public class Position {
 
-    private double longitude;
     private double lattitude;
+    private double longitude;
 
-    public Position(double longitude, double lattitude) {
-        this.longitude = longitude;
+    public Position(double lattitude, double longitude) {
         this.lattitude = lattitude;
+        this.longitude = longitude;
     }
 
     // Method to calculate distance in km between two positions
@@ -29,11 +29,8 @@ public class Position {
         // Get a DistanceCalculator from the SpatialContext
         DistanceCalculator distCalc = ctx.getDistCalc();
 
-        // Calculate the distance between the two points in degrees
-        double distance = distCalc.distance(point1, point2) * DistanceUtils.DEG_TO_KM;
-        System.out.println(distance);
-
-        return distance;
+        // Calculate the distance between the two points in degrees and convert to Km
+        return distCalc.distance(point1, point2) * DistanceUtils.DEG_TO_KM;
     }
 
     public double getLattitude() {
