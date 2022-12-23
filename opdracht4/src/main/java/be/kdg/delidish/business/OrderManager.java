@@ -74,10 +74,12 @@ public class OrderManager {
                 // Hoe lang geleden is het order geplaatst?
                 // Langer dan 5 min geleden --> order is available voor deze koerier
                 if (order.getTimePlaced().isBefore(LocalDateTime.now().minusMinutes(5))) {
+                    System.out.println("Er moet niet meer gegeken worden naar het gemiddelde aantal DP");
                     return true;
                 } else {
                     // gemiddelde berekenen van alle in aanmerking komende koeriers
                     // Hoger dan gemiddelde? --> order is available voor deze koerier
+                    System.out.println("Er moet wel nog gekeken worden naar het aantal DP");
                     return courier.getTotalDeliveryPoints() >= order.getAverageDeliveryPoints(applicableCouriers);
                 }
             }

@@ -70,4 +70,8 @@ public class MemoryRepository<K, V> implements Repository<K, V> {
     private Stream<V> findStream(Predicate<V> predicate) {
         return data.values().stream().filter(predicate);
     }
+
+    public void clear() {
+        data.clear();
+    }
 }

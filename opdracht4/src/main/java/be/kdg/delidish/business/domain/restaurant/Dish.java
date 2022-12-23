@@ -3,6 +3,7 @@ package be.kdg.delidish.business.domain.restaurant;
 import be.kdg.delidish.business.domain.payment.Money;
 import ch.qos.logback.core.pattern.util.RestrictedEscapeUtil;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class Dish {
@@ -42,5 +43,20 @@ public class Dish {
 
     public int getMinutesBeforeCold() {
         return productionTime + maximumDeliveryTime;
+    }
+
+    @Override
+    public String toString() {
+        return "Dish{" +
+                "subdishes=" + subdishes +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", price=" + price +
+                ", productionTime=" + productionTime +
+                ", maximumDeliveryTime=" + maximumDeliveryTime +
+                ", allergens=" + Arrays.toString(allergens) +
+                ", orderable=" + orderable +
+                ", restaurant=" + restaurant +
+                '}';
     }
 }

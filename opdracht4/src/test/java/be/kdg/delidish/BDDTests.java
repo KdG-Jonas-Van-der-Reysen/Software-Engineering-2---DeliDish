@@ -164,6 +164,8 @@ public class BDDTests {
 
     @Given("^An order with description \"([^\"]*)\" for dish with id (\\d+) happened (\\d+) minutes in the past and has state \"([^\"]*)\" placed by customer (\\d+)$")
     public void anOrderWithDescriptionForDishWithIdHappenedMinutesInThePastAndHasStatePlacedByCustomer(String description, int dishId, int minutesAgo, String orderState, int customerId) {
+        // Clear order repository
+        orderRepository.clear();
 
         // Get the dish
         Dish dish = dishRepository.findById(dishId);
@@ -285,6 +287,7 @@ public class BDDTests {
 
         // Add order to repository
         orderRepository.insert(order.getOrderId(), order);
+        Order order2 = orderRepository.findById(order.getOrderId());
     }
 
     @When("^Courier delivers (\\d+) minutes after order (\\d+) placed$")
@@ -301,11 +304,9 @@ public class BDDTests {
 
         if(orderActuallyDelivered.isBefore(order.getOrderIsColdAt())) {
             // Order has been delivered on time
-            System.out.println("Order has been delivered on time");
             dpe = new DeliveryPointEvent(50, EventType.TIMELY_DELIVERY);
         } else {
             // Order has been delivered too late
-            System.out.println("Order has been delivered too late");
             dpe = new DeliveryPointEvent(-20, EventType.LATE_DELIVERY);
         }
         courier.addPointEvent(dpe);

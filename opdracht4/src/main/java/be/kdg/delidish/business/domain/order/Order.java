@@ -104,6 +104,7 @@ public class Order {
     public LocalDateTime getOrderIsColdAt() {
         // Get the lowest minutes before cold
         Optional<OrderLine> lowestMinutesBeforeCold = orderLines.stream().min(Comparator.comparingInt(OrderLine::getMinutesBeforeCold));
+        System.out.println("lowestMinutesBeforeCold = " + lowestMinutesBeforeCold);
 
         return lowestMinutesBeforeCold.map(orderLine -> timePlaced.plusMinutes(orderLine.getMinutesBeforeCold())).orElse(timePlaced);
     }

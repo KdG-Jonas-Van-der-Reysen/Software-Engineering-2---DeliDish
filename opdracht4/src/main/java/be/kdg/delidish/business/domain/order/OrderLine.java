@@ -37,7 +37,11 @@ public class OrderLine {
 	}
 
 	public int getMinutesBeforeCold() {
+		System.out.println("====New order line=====");
 		Optional<Dish> deliveryTime = dishes.stream().min(Comparator.comparingInt(Dish::getMinutesBeforeCold));
+		dishes.stream().forEach(dish -> System.out.println(dish.getName() + ": " + dish.getMinutesBeforeCold()));
+		System.out.println("deliveryTime = " + deliveryTime);
+		System.out.println("deliveryTime = " + deliveryTime);
 
 		// Gaat nooit hierin komen maar kijk, IntelliJ klaagt anders
 		return deliveryTime.map(Dish::getMinutesBeforeCold).orElse(0);
