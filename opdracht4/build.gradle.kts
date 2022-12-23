@@ -26,6 +26,7 @@ dependencies {
     testImplementation("io.cucumber:cucumber-spring:${cucumberVersion}")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.locationtech.spatial4j:spatial4j:0.8")
     compileOnly("org.projectlombok:lombok")
     compileOnly("org.springframework.boot:spring-boot-devtools")
     runtimeOnly("com.h2database:h2")
