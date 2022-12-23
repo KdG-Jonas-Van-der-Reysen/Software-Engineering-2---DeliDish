@@ -36,6 +36,13 @@ public class OrderLine {
 		return deliveryTime.map(Dish::getMaximumDeliveryTime).orElse(0);
 	}
 
+	public int getMinutesBeforeCold() {
+		Optional<Dish> deliveryTime = dishes.stream().min(Comparator.comparingInt(Dish::getMinutesBeforeCold));
+
+		// Gaat nooit hierin komen maar kijk, IntelliJ klaagt anders
+		return deliveryTime.map(Dish::getMinutesBeforeCold).orElse(0);
+	}
+
 	public String toString() {
 		 return dishes.stream().map(Dish::getName).collect(Collectors.joining( "," ));
 	}

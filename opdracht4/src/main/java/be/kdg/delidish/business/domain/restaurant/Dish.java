@@ -39,4 +39,8 @@ public class Dish {
     public int getMaximumDeliveryTime() {
         return maximumDeliveryTime;
     }
+
+    public int getMinutesBeforeCold() {
+        return productionTime + maximumDeliveryTime;
+    }
 }

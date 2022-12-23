@@ -299,7 +299,7 @@ public class BDDTests {
         
         DeliveryPointEvent dpe;
 
-        if(orderActuallyDelivered.isBefore(order.getExpectedDeliveryTime())) {
+        if(orderActuallyDelivered.isBefore(order.getOrderIsColdAt())) {
             // Order has been delivered on time
             System.out.println("Order has been delivered on time");
             dpe = new DeliveryPointEvent(50, EventType.TIMELY_DELIVERY);

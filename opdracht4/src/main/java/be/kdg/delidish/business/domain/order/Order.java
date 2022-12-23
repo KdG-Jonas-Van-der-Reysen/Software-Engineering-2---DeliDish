@@ -89,7 +89,6 @@ public class Order {
     public int getAverageDeliveryPoints(List<Courier> applicableCouriers) {
         // Eerst alle applicable koeriers ophalen -> gemiddelde berekenen
         return (int) applicableCouriers.stream().mapToDouble(Courier::getTotalDeliveryPoints).average().getAsDouble();
-
     }
 
     public LocalDateTime getExpectedDeliveryTime() {
@@ -100,6 +99,13 @@ public class Order {
         LocalDateTime orderShouldBeDelivered = orderReady.plusMinutes(getMaximumDeliveryTime());
 
         return orderShouldBeDelivered;
+    }
+
+    public LocalDateTime getOrderIsColdAt() {
+        // Get the lowest minutes before cold
+        Optional<OrderLine> lowestMinutesBeforeCold = orderLines.stream().min(Comparator.comparingInt(OrderLine::getMinutesBeforeCold));
+
+        return lowestMinutesBeforeCold.map(orderLine -> timePlaced.plusMinutes(orderLine.getMinutesBeforeCold())).orElse(timePlaced);
     }
 
     @Override
