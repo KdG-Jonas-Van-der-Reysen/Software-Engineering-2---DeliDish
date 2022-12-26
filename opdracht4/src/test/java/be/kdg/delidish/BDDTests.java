@@ -2,14 +2,16 @@ package be.kdg.delidish;
 
 import be.kdg.delidish.application.DeliveryController;
 import be.kdg.delidish.application.OrderController;
-import be.kdg.delidish.business.domain.common.*;
+import be.kdg.delidish.business.domain.common.Address;
+import be.kdg.delidish.business.domain.common.ContactInfo;
+import be.kdg.delidish.business.domain.common.DeliveryAddress;
+import be.kdg.delidish.business.domain.common.Position;
 import be.kdg.delidish.business.domain.order.Order;
-import be.kdg.delidish.business.domain.order.OrderEvent;
-import be.kdg.delidish.business.domain.order.OrderLine;
 import be.kdg.delidish.business.domain.order.OrderState;
-import be.kdg.delidish.business.domain.person.*;
-import be.kdg.delidish.business.domain.restaurant.Dish;
-import be.kdg.delidish.business.domain.restaurant.Restaurant;
+import be.kdg.delidish.business.domain.person.Courier;
+import be.kdg.delidish.business.domain.person.EventType;
+import be.kdg.delidish.business.domain.restaurant.DishIngredient;
+import be.kdg.delidish.business.factory.*;
 import be.kdg.delidish.repositories.memory.*;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.And;
@@ -17,6 +19,7 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.cucumber.spring.CucumberContextConfiguration;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
@@ -24,175 +27,172 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @SpringBootTest
 @CucumberContextConfiguration
 public class BDDTests {
     // Repositories
-    private final CourierMemoryRepository courierRepository;
-    private final CityMemoryRepository cityRepository;
-    private final RestaurantMemoryRepository restaurantRepository;
-    private final CustomerMemoryRepository customerRepository;
-    private final DeliveryAddressMemoryRepository deliveryAddressRepository;
-    private final DishMemoryRepository dishRepository;
-    private final OrderMemoryRepository orderRepository;
+    @Autowired
+    private CourierMemoryRepository courierRepository;
+    @Autowired
+    private CityMemoryRepository cityRepository;
+    @Autowired
+    private RestaurantMemoryRepository restaurantRepository;
+    @Autowired
+    private CustomerMemoryRepository customerRepository;
+    @Autowired
+    private DeliveryAddressMemoryRepository deliveryAddressRepository;
+    @Autowired
+    private DishMemoryRepository dishRepository;
+    @Autowired
+    private OrderMemoryRepository orderRepository;
 
     // Controllers
-    private final DeliveryController deliveryController;
-    private final OrderController orderController;
+    @Autowired
+    private DeliveryController deliveryController;
+    @Autowired
+    private OrderController orderController;
 
     // Attributes
     private List<Order> availableDeliveries;
 
-    public BDDTests(
-            CourierMemoryRepository courierRepository,
-            CityMemoryRepository cityRepository,
-            RestaurantMemoryRepository restaurantRepository,
-            CustomerMemoryRepository customerRepository,
-            DeliveryAddressMemoryRepository deliveryAddressRepository,
-            DishMemoryRepository dishRepository, OrderMemoryRepository orderRepository, DeliveryController deliveryController,
-            OrderController orderController
-    ) {
-        this.courierRepository = courierRepository;
-        this.cityRepository = cityRepository;
-        this.restaurantRepository = restaurantRepository;
-        this.customerRepository = customerRepository;
-        this.deliveryAddressRepository = deliveryAddressRepository;
-        this.dishRepository = dishRepository;
-        this.orderRepository = orderRepository;
-        this.deliveryController = deliveryController;
-        this.orderController = orderController;
-    }
-
+    // Background Data
     @Given("^cities:$")
     public void cities(DataTable dataTable) {
         for (Map<String, String> map : dataTable.asMaps()) {
-            cityRepository.insert(cityRepository.getNextAvailableId(), new City(Integer.parseInt(map.get("postal")), map.get("name"), map.get("country")));
+
+            cityRepository.insert(
+                    cityRepository.getNextAvailableId(),
+                    CityFactory.create(
+                            Integer.parseInt(map.get("postal")),
+                            map.get("name"),
+                            map.get("country")
+                    )
+            );
         }
     }
 
     @Given("^restaurants:$")
     public void restaurants(DataTable dataTable) {
         for (Map<String, String> map : dataTable.asMaps()) {
-            Position restaurantPosition = new Position(Double.parseDouble(map.get("adress_lat")), Double.parseDouble(map.get("adress_long")));
-            Address restaurantAddress = new Address(
+
+            Position restaurantPosition = PositionFactory.create(
+                    Double.parseDouble(map.get("adress_lat")),
+                    Double.parseDouble(map.get("adress_long"))
+            );
+
+            Address restaurantAddress = AddressFactory.create(
                     cityRepository.findById(Integer.parseInt(map.get("city"))),
-                    "",
-                    "",
+                    "UNKNOWN",
+                    "UNKNOWN",
                     restaurantPosition,
                     cityRepository.findById(Integer.parseInt(map.get("city"))).getCountry()
             );
 
-            ContactInfo contactInfo = new ContactInfo(restaurantAddress, "geen@email.com", "geen tel");
+            ContactInfo contactInfo = ContactInfoFactory.create(
+                    restaurantAddress,
+                    "UNKNOWN",
+                    "UNKNOWN"
+            );
 
-            restaurantRepository.insert(restaurantRepository.getNextAvailableId(), new Restaurant(map.get("Name"), contactInfo));
-
+            restaurantRepository.insert(
+                    restaurantRepository.getNextAvailableId(),
+                    RestaurantFactory.create(
+                            map.get("Name"),
+                            contactInfo
+                    )
+            );
         }
     }
 
     @Given("^customers:$")
     public void customers(DataTable dataTable) {
         for (Map<String, String> map : dataTable.asMaps()) {
-            Customer cmr = new Customer(map.get("firstName"), map.get("lastName"));
-            cmr.setPersonId(customerRepository.getNextAvailableId());
-            customerRepository.insert(cmr.getPersonId(), cmr);
+
+            //TODO: courier.getPersonId() vs courierRepository.getNextAvailableId()? (Best zoveel mogelijk bullshit code vermijden?)
+            //customer.setPersonId(customerRepository.getNextAvailableId()
+
+            customerRepository.insert(
+                    customerRepository.getNextAvailableId(),
+                    CustomerFactory.create(
+                            map.get("firstName"),
+                            map.get("lastName")
+                    )
+            );
         }
     }
 
     @Given("^deliveryadresses:$")
     public void deliveryadresses(DataTable dataTable) {
         for (Map<String, String> map : dataTable.asMaps()) {
-            // Eerst customer ophalen
-            Customer cmr = customerRepository.findById(Integer.parseInt(map.get("customer_id")));
 
-            // Dan positie aanmaken
-            Position deliveryPosition = new Position(Double.parseDouble(map.get("lattitude")), Double.parseDouble(map.get("longitude")));
+            Position deliveryPosition = PositionFactory.create(
+                    Double.parseDouble(map.get("lattitude")),
+                    Double.parseDouble(map.get("longitude"))
+            );
 
-            DeliveryAddress deliveryAddress = new DeliveryAddress(
+            DeliveryAddress deliveryAddress = DeliveryAddressFactory.create(
                     cityRepository.findById(Integer.parseInt(map.get("city_id"))),
                     map.get("street"),
                     map.get("number"),
                     deliveryPosition,
                     cityRepository.findById(Integer.parseInt(map.get("city_id"))).getCountry(),
-                    cmr
+                    customerRepository.findById(Integer.parseInt(map.get("customer_id")))
             );
 
             deliveryAddressRepository.insert(
                     deliveryAddressRepository.getNextAvailableId(),
                     deliveryAddress
             );
-
         }
     }
 
     @Given("^Couriers:$")
     public void couriers(DataTable dataTable) {
         for (Map<String, String> map : dataTable.asMaps()) {
-            Partner partner = new Partner("Be4848464");
 
-            Courier courier = new Courier(
+            Courier courier = CourierFactory.create(
                     map.get("FirstName"),
                     map.get("LastName"),
-                    partner,
                     new ArrayList<>(),
                     true,
-                    new Position(Double.parseDouble(map.get("current_lattitude")), Double.parseDouble(map.get("current_longitude")))
+                    PositionFactory.create(
+                            Double.parseDouble(map.get("current_lattitude")),
+                            Double.parseDouble(map.get("current_longitude"))
+                    )
             );
 
-            courier.setPersonId(courierRepository.getNextAvailableId());
-            courierRepository.insert(courier.getPersonId(), courier);
+            //TODO: courier.getPersonId() vs courierRepository.getNextAvailableId()? (Best zoveel mogelijk bullshit code vermijden?)
+            //courier.setPersonId(courierRepository.getNextAvailableId());
+            courierRepository.insert(courierRepository.getNextAvailableId(), courier);
         }
     }
 
     @Given("^Dishes:$")
     public void dishes(DataTable dataTable) {
         for (Map<String, String> map : dataTable.asMaps()) {
-            // Get restaurant via restaurant id
-            Restaurant restaurant = restaurantRepository.findById(Integer.parseInt(map.get("resto_id")));
-            Dish dish = new Dish(
+
+            DishIngredient dishIngredient = DishFactory.create(
                     Integer.parseInt(map.get("preperationTime")),
                     map.get("name"),
-                    restaurant,
+                    restaurantRepository.findById(Integer.parseInt(map.get("resto_id"))),
                     Integer.parseInt(map.get("maxDeliveryTime"))
             );
 
-            dishRepository.insert(Integer.parseInt(map.get("id")), dish);
+            dishRepository.insert(Integer.parseInt(map.get("id")), dishIngredient);
         }
     }
 
+    // Tests
     @Given("^An order with description \"([^\"]*)\" for dish with id (\\d+) happened (\\d+) minutes in the past and has state \"([^\"]*)\" placed by customer (\\d+)$")
     public void anOrderWithDescriptionForDishWithIdHappenedMinutesInThePastAndHasStatePlacedByCustomer(String description, int dishId, int minutesAgo, String orderState, int customerId) {
         // Clear order repository
         orderRepository.clear();
 
-        // Get the dish
-        Dish dish = dishRepository.findById(dishId);
-
-        // Get the restaurant via the dish
-        Restaurant restaurant = dish.getRestaurant();
-
-        // Get the order state
-        OrderState state = OrderState.valueOf(orderState);
-
-        // Get the customer
-        Customer cmr = customerRepository.findById(customerId);
-
-        // Create the order line
-        List<Dish> dishes = new ArrayList<>();
-        dishes.add(dish);
-        OrderLine orderLine = new OrderLine(dishes, 1);
-
-        // Add it to a list
-        List<OrderLine> orderLines = new ArrayList<>();
-        orderLines.add(orderLine);
-
-        // Create the order
-        Order order = new Order(restaurant, LocalDateTime.now().minusMinutes(minutesAgo), state, orderLines, description);
-        order.setOrderId(orderRepository.getNextAvailableId());
-
-        // Add order to repository
-        orderRepository.insert(order.getOrderId(), order);
+        // Add via manager
+        orderController.addOrderWithDishForCustomer(description, dishId, minutesAgo, orderState, customerId);
     }
 
     @And("^Courier (\\d+) is active and has (\\d+) deliveryPoints$")
@@ -213,7 +213,6 @@ public class BDDTests {
 
     @Then("^Courier gets an empty list$")
     public void courierGetsAnEmptyList() {
-        // Check if list is empty
         assertEquals(0, availableDeliveries.size());
     }
 
@@ -254,79 +253,15 @@ public class BDDTests {
     public void anOrderWithDescriptionForDishWithIndexAndDishWithIndexHappenedMinutesInThePastAndHasStatePlacedByCustomer(String description, int firstDishId, int secondDishId, int minutesAgo, String orderState, int customerId) {
         orderRepository.clear();
 
-        // Get the dishes
-        Dish dish1 = dishRepository.findById(firstDishId);
-        Dish dish2 = dishRepository.findById(secondDishId);
+        List<Integer> dishes = new ArrayList<>();
+        dishes.add(firstDishId, secondDishId);
 
-        // Get the restaurant via the dish
-        Restaurant restaurant = dish1.getRestaurant();
-
-        // Get the order state
-        OrderState state = OrderState.valueOf(orderState);
-
-        // Get the customer
-        Customer cmr = customerRepository.findById(customerId);
-
-        // Create the order line
-        List<Dish> dishes1 = new ArrayList<>();
-        dishes1.add(dish1);
-        List<Dish> dishes2 = new ArrayList<>();
-        dishes2.add(dish2);
-
-        OrderLine orderLine1 = new OrderLine(dishes1, 1);
-        OrderLine orderLine2 = new OrderLine(dishes2, 1);
-
-        // Add it to a list
-        List<OrderLine> orderLines = new ArrayList<>();
-        orderLines.add(orderLine1);
-        orderLines.add(orderLine2);
-
-        // Create the order
-        Order order = new Order(restaurant, LocalDateTime.now().minusMinutes(minutesAgo), state, orderLines, description);
-        order.setOrderId(orderRepository.getNextAvailableId());
-
-        // Add order to repository
-        orderRepository.insert(order.getOrderId(), order);
-        Order order2 = orderRepository.findById(order.getOrderId());
+        orderController.addOrderWithDishesForCustomer(description, dishes, minutesAgo, orderState, customerId);
     }
 
     @When("^Courier delivers (\\d+) minutes after order (\\d+) placed$")
     public void courierDeliversMinutesAfterOrderPlaced(int minutes, int orderId) {
-        Order order = orderRepository.findById(orderId);
-        Courier courier = courierRepository.findById(order.getCourierId());
-
-        /** Delivery points toevoegen **/
-
-        // Calculate when the order has actually been delivered
-        LocalDateTime orderActuallyDelivered = order.getTimePlaced().plusMinutes(minutes);
-        
-        DeliveryPointEvent dpe;
-
-        if(orderActuallyDelivered.isBefore(order.getOrderIsColdAt())) {
-            // Order has been delivered on time
-            dpe = new DeliveryPointEvent(50, EventType.TIMELY_DELIVERY);
-        } else {
-            // Order has been delivered too late
-            dpe = new DeliveryPointEvent(-20, EventType.LATE_DELIVERY);
-        }
-        courier.addPointEvent(dpe);
-
-        /** Order aanpassen **/
-        // Update order state
-        order.setState(OrderState.DELIVERED);
-
-        // Add an event to the order, so we know when it's been delivered
-        OrderEvent oe = new OrderEvent(
-                dpe,
-                orderActuallyDelivered,
-                dpe.getEventType(),
-                "Order has been delivered! Enjoy your meal."
-        );
-
-        order.addEvent(oe);
-
-        //Update
-        //orderRepository.update(order.getOrderId(), order);
+        orderController.pickupOrderAfterMinutes(minutes, orderId);
     }
 
     @Then("^State of order (\\d+) is \"([^\"]*)\"$")
@@ -341,7 +276,10 @@ public class BDDTests {
     public void courierHasAnDeliveryPointRecordWithTypeWithPoints(int courierId, String eventType, int deliveryPoints) {
         assertTrue(
                 courierRepository.findById(courierId).getDeliveryPointEvents().contains(
-                        new DeliveryPointEvent(deliveryPoints, EventType.valueOf(eventType))
+                        DeliveryPointEventFactory.create(
+                                deliveryPoints,
+                                EventType.valueOf(eventType)
+                        )
                 )
         );
     }

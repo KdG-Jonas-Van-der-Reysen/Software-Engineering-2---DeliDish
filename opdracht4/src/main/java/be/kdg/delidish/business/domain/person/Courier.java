@@ -1,23 +1,25 @@
 package be.kdg.delidish.business.domain.person;
 
+import be.kdg.delidish.business.adapter.DistanceCalculator;
 import be.kdg.delidish.business.domain.common.Position;
 import be.kdg.delidish.business.domain.order.Order;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.List;
 
 public class Courier extends Person {
 
 	private Partner partner;
 	private List<DeliveryPointEvent> deliveryPointEvents;
-	private boolean isAvailable;//TODO gebruiken
+	private boolean isAvailable;
+	private DistanceCalculator distanceCalculator;
 
-	public Courier(String firstName, String lastName, Partner partner, List<DeliveryPointEvent> deliveryPointEvents, boolean isAvailable, Position currentPosition) {
+	public Courier(String firstName, String lastName, List<DeliveryPointEvent> deliveryPointEvents, boolean isAvailable, Position currentPosition, DistanceCalculator distanceCalculator) {
 		super(firstName, lastName);
-		this.partner = partner;
 		this.deliveryPointEvents = deliveryPointEvents;
 		this.isAvailable = isAvailable;
 		this.currentPosition = currentPosition;
+		this.distanceCalculator = distanceCalculator;
 	}
 
 	public void setCurrentPosition(Position currentPosition) {
@@ -61,7 +63,7 @@ public class Courier extends Person {
 			Position restaurantPosition = order.getRestaurant().getContactInfo().getAddress().getPosition();
 
 			// Aankomsttijd koerier bij restaurant berekenen
-			double distanceInKm = currentPosition.calculateDistance(restaurantPosition);
+			double distanceInKm = distanceCalculator.getDistance(currentPosition, restaurantPosition);
 			int travelTimeInMinutes = (int) (distanceInKm * 4);
 			LocalDateTime koerierTerPlaatse = LocalDateTime.now().plusMinutes(travelTimeInMinutes);
 

@@ -1,53 +1,38 @@
 package be.kdg.delidish.business.domain.order;
 
-import be.kdg.delidish.business.domain.restaurant.Dish;
+import be.kdg.delidish.business.domain.restaurant.DishIngredient;
 
-import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class OrderLine {
 
-	private List<Dish> dishes;
+	private List<DishIngredient> dishIngredients;	//TODO: list van composites
 	private int quantity;
 	private String remark;
 
-	public OrderLine(List<Dish> dishes, int quantity) {
-		this.dishes = dishes;
+	public OrderLine(List<DishIngredient> dishIngredients, int quantity) {
+		this.dishIngredients = dishIngredients;
 		this.quantity = quantity;
 	}
 
-	public List<Dish> getDishes() {
-		return dishes;
+	public List<DishIngredient> getDishes() {
+		return dishIngredients;
 	}
 
 	public int getProductionTime() {
-		Optional<Dish> productionTime = dishes.stream().max(Comparator.comparingInt(Dish::getProductionTime));
-
-		// Gaat nooit hierin komen maar kijk, IntelliJ klaagt anders
-		return productionTime.map(Dish::getProductionTime).orElse(0);
+		return dishIngredients.stream().mapToInt(DishIngredient::getProductionTime).max().orElse(0);
 	}
 
 	public int getMaximumDeliveryTime() {
-		Optional<Dish> deliveryTime = dishes.stream().min(Comparator.comparingInt(Dish::getMaximumDeliveryTime));
-
-		// Gaat nooit hierin komen maar kijk, IntelliJ klaagt anders
-		return deliveryTime.map(Dish::getMaximumDeliveryTime).orElse(0);
+		return dishIngredients.stream().mapToInt(DishIngredient::getMaximumDeliveryTime).min().orElse(0);
 	}
 
 	public int getMinutesBeforeCold() {
-		System.out.println("====New order line=====");
-		Optional<Dish> deliveryTime = dishes.stream().min(Comparator.comparingInt(Dish::getMinutesBeforeCold));
-		dishes.stream().forEach(dish -> System.out.println(dish.getName() + ": " + dish.getMinutesBeforeCold()));
-		System.out.println("deliveryTime = " + deliveryTime);
-		System.out.println("deliveryTime = " + deliveryTime);
-
-		// Gaat nooit hierin komen maar kijk, IntelliJ klaagt anders
-		return deliveryTime.map(Dish::getMinutesBeforeCold).orElse(0);
+		return dishIngredients.stream().mapToInt(DishIngredient::getMinutesBeforeCold).min().orElse(0);
 	}
 
 	public String toString() {
-		 return dishes.stream().map(Dish::getName).collect(Collectors.joining( "," ));
+		 return dishIngredients.stream().map(DishIngredient::getName).collect(Collectors.joining( "," ));
 	}
 }

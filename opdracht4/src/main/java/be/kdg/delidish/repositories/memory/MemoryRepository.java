@@ -2,6 +2,7 @@ package be.kdg.delidish.repositories.memory;
 
 import be.kdg.delidish.repositories.Repository;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,7 @@ public class MemoryRepository<K, V> implements Repository<K, V> {
 
     @Override
     public boolean update(K key, V value) {
+        data.remove(key);
         return data.put(key, value)!=null;
     }
 
@@ -50,7 +52,7 @@ public class MemoryRepository<K, V> implements Repository<K, V> {
     }
 
     public List<V> getAll() {
-        return data.values().stream().collect(Collectors.toList());
+        return new ArrayList<>(data.values());
     }
 
 

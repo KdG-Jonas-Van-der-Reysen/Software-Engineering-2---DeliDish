@@ -40,6 +40,10 @@ public class Order {
         this.courier = courier;
     }
 
+    public void assignCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
     public void addEvent(OrderEvent event) {
         orderEvents.add(event);
     }
@@ -74,16 +78,12 @@ public class Order {
 
     public int getProductionTime() {
         // Get order line with the highest production time
-        Optional<OrderLine> maxProductionTime = orderLines.stream().max(Comparator.comparingInt(OrderLine::getProductionTime));
-
-        return maxProductionTime.map(OrderLine::getProductionTime).orElse(0);
+        return orderLines.stream().mapToInt(OrderLine::getProductionTime).max().orElse(0);
     }
 
     public int getMaximumDeliveryTime() {
         // Get order line with the lowest delivery time
-        Optional<OrderLine> lowestMaxDeliveryTime = orderLines.stream().min(Comparator.comparingInt(OrderLine::getMaximumDeliveryTime));
-
-        return lowestMaxDeliveryTime.map(OrderLine::getProductionTime).orElse(0);
+        return orderLines.stream().mapToInt(OrderLine::getMaximumDeliveryTime).max().orElse(0);
     }
 
     public int getAverageDeliveryPoints(List<Courier> applicableCouriers) {
@@ -103,10 +103,8 @@ public class Order {
 
     public LocalDateTime getOrderIsColdAt() {
         // Get the lowest minutes before cold
-        System.out.println("Orderlines Size: " + orderLines.size());
         //orderLines.stream().map(OrderLine::getMinutesBeforeCold).forEach(System.out::println);
         Optional<OrderLine> lowestMinutesBeforeCold = orderLines.stream().min(Comparator.comparingInt(OrderLine::getMinutesBeforeCold));
-        System.out.println("lowestMinutesBeforeCold = " + lowestMinutesBeforeCold);
 
         return lowestMinutesBeforeCold.map(orderLine -> timePlaced.plusMinutes(orderLine.getMinutesBeforeCold())).orElse(timePlaced);
     }

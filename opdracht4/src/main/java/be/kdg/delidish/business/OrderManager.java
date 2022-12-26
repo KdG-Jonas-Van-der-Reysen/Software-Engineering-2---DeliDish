@@ -2,15 +2,28 @@ package be.kdg.delidish.business;
 
 import be.kdg.delidish.business.domain.order.Order;
 import be.kdg.delidish.business.domain.order.OrderEvent;
+import be.kdg.delidish.business.domain.order.OrderLine;
 import be.kdg.delidish.business.domain.order.OrderState;
 import be.kdg.delidish.business.domain.person.Courier;
+import be.kdg.delidish.business.domain.person.Customer;
 import be.kdg.delidish.business.domain.person.DeliveryPointEvent;
 import be.kdg.delidish.business.domain.person.EventType;
+import be.kdg.delidish.business.domain.restaurant.DishIngredient;
+import be.kdg.delidish.business.domain.restaurant.Restaurant;
+import be.kdg.delidish.business.factory.DeliveryPointEventFactory;
+import be.kdg.delidish.business.factory.OrderEventFactory;
+import be.kdg.delidish.business.factory.OrderFactory;
+import be.kdg.delidish.business.factory.OrderLineFactory;
+import be.kdg.delidish.business.strategy.availableOrders.AvailableOrdersStrategy;
 import be.kdg.delidish.repositories.memory.CourierMemoryRepository;
+import be.kdg.delidish.repositories.memory.CustomerMemoryRepository;
+import be.kdg.delidish.repositories.memory.DishMemoryRepository;
 import be.kdg.delidish.repositories.memory.OrderMemoryRepository;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -18,10 +31,19 @@ public class OrderManager {
 
     private final OrderMemoryRepository orderRepository;
     private final CourierMemoryRepository courierRepository;
+    private final DishMemoryRepository dishRepository;
+    private final CustomerMemoryRepository customerRepository;
 
-    OrderManager(OrderMemoryRepository orderRepository, CourierMemoryRepository courierRepository) {
+    // Strategies
+    private final AvailableOrdersStrategy availableOrdersStrategy;
+
+
+    OrderManager(OrderMemoryRepository orderRepository, CourierMemoryRepository courierRepository, DishMemoryRepository dishRepository, CustomerMemoryRepository customerRepository, @Qualifier("MustArriveInTime") AvailableOrdersStrategy availableOrdersStrategy) {
         this.orderRepository = orderRepository;
         this.courierRepository = courierRepository;
+        this.dishRepository = dishRepository;
+        this.customerRepository = customerRepository;
+        this.availableOrdersStrategy = availableOrdersStrategy;
     }
 
     public void assignOrder(int orderId, int courierId, LocalDateTime ldt) {
@@ -56,40 +78,7 @@ public class OrderManager {
     }
 
     public List<Order> getAvailableOrders(int courierId) {
-        // Eerst alle orders opvragen en filteren op status ORDER_PLACED --> Dat zijn alle orders die nog geleverd moeten worden
-        List<Order> orders = orderRepository.getAll().stream().filter(order -> order.getState() == OrderState.ORDER_PLACED).toList();
-
-        Courier courier = courierRepository.findById(courierId);
-        if (courier == null) {   //if the courier is invalid return empty list
-            return orders;
-        }
-
-        // Per order
-        // Lijst ophalen van in aanmerking komende koeriers per order (getApplicableCouriersForOrder)
-        return orders.stream().filter(order -> {
-            List<Courier> applicableCouriers = getApplicableCouriersForOrder(order);
-            // --> Zit onze koerier erbij?
-            if (applicableCouriers.contains(courier)) {
-                // Hoe lang geleden is het order geplaatst?
-                // Langer dan 5 min geleden --> order is available voor deze koerier
-                if (order.getTimePlaced().isBefore(LocalDateTime.now().minusMinutes(5))) {
-                    System.out.println("Er moet niet meer gegeken worden naar het gemiddelde aantal DP");
-                    return true;
-                } else {
-                    // gemiddelde berekenen van alle in aanmerking komende koeriers
-                    // Hoger dan gemiddelde? --> order is available voor deze koerier
-                    System.out.println("Er moet wel nog gekeken worden naar het aantal DP");
-                    return courier.getTotalDeliveryPoints() >= order.getAverageDeliveryPoints(applicableCouriers);
-                }
-            }
-            return false;
-        }).toList();
-    }
-
-    // Lijst maken van koeriers die in aanmerking komen voor een order
-    private List<Courier> getApplicableCouriersForOrder(Order order) {
-        // Alle koeriers ophalen en filteren op het volgende
-        return courierRepository.getAll().stream().filter(courier -> courier.willArriveInTimeForOrder(order)).toList();
+        return availableOrdersStrategy.getAvailableOrders(courierId);
     }
 
     public void addOrder(Order order) {
@@ -106,13 +95,11 @@ public class OrderManager {
         order.setState(OrderState.UNDERWAY_FOR_DELIVERY);
 
         if(timeOrderPickedUp.isAfter(order.getTimePlaced().plusMinutes(order.getProductionTime() + 10))) {
-            System.out.println("Courier picked order up too late");
             EventType eventType = EventType.LATE_PICKUP;
             DeliveryPointEvent deliveryEvent = new DeliveryPointEvent(-20, eventType);
             order.addEvent(new OrderEvent(deliveryEvent, LocalDateTime.now(), eventType, ""));
             courier.addPointEvent(deliveryEvent);
         }else {
-            System.out.println("Courier picked order up on time");
             EventType eventType = EventType.TIMELY_PICKUP;
             DeliveryPointEvent deliveryEvent = new DeliveryPointEvent(50, eventType);
             order.addEvent(new OrderEvent(deliveryEvent, LocalDateTime.now(), eventType, ""));
@@ -123,5 +110,84 @@ public class OrderManager {
     public void deliverOrder(int orderId, int courierId) {
 
     }
-}
 
+    public void addOrderWithDishForCustomer(String description, int dishId, int minutesAgo, String orderState, int customerId) {
+        List<Integer> dishes = new ArrayList<>();
+        dishes.add(dishId);
+
+        this.addOrderWithDishesForCustomer(description, dishes, minutesAgo, orderState, customerId);
+    }
+
+    public void addOrderWithDishesForCustomer(String description, List<Integer> dishesIds, int minutesAgo, String orderState, int customerId) {
+        List<OrderLine> orderLines = new ArrayList<>();
+
+        for (Integer dishId : dishesIds) {
+            // Find the dish
+            DishIngredient dishIngredient = dishRepository.findById(dishId);
+
+            // Create the order line
+            List<DishIngredient> dishesInOrderLine = new ArrayList<>();
+            dishesInOrderLine.add(dishIngredient);
+            OrderLine orderLine = OrderLineFactory.create(dishesInOrderLine, 1);
+
+            orderLines.add(orderLine);
+        }
+
+        // Get the restaurant via the dish
+        Restaurant restaurant = orderLines.get(0).getDishes().get(0).getRestaurant();
+
+        // Get the order state
+        OrderState state = OrderState.valueOf(orderState);
+
+        // Create the order
+        Order order = OrderFactory.create(restaurant, LocalDateTime.now().minusMinutes(minutesAgo), state, orderLines, description);
+        order.setOrderId(orderRepository.getNextAvailableId());
+
+        // Get the customer
+        Customer cmr = customerRepository.findById(customerId);
+
+        // Assign the customer
+        order.assignCustomer(cmr);
+
+        // Add order to repository
+        orderRepository.insert(order.getOrderId(), order);
+    }
+
+    public void pickupOrderAfterMinutes(int minutes, int orderId) {
+        Order order = orderRepository.findById(orderId);
+        Courier courier = courierRepository.findById(order.getCourierId());
+
+        // Delivery points toevoegen
+        /// Calculate when the order has actually been delivered
+        LocalDateTime orderActuallyDelivered = order.getTimePlaced().plusMinutes(minutes);
+
+        DeliveryPointEvent dpe;
+
+        if (orderActuallyDelivered.isBefore(order.getOrderIsColdAt())) {
+            //// Order has been delivered on time
+            dpe = DeliveryPointEventFactory.create(50, EventType.TIMELY_DELIVERY);
+        }else {
+            //// Order has been delivered too late
+            dpe = DeliveryPointEventFactory.create(-20, EventType.LATE_DELIVERY);
+        }
+
+        courier.addPointEvent(dpe);
+
+        // Order aanpassen //
+        /// Update order state
+        order.setState(OrderState.DELIVERED);
+
+        /// Add an event to the order, so we know when it's been delivered
+        OrderEvent oe = OrderEventFactory.create(
+                dpe,
+                orderActuallyDelivered,
+                dpe.getEventType(),
+                "Order has been delivered! Enjoy your meal."
+        );
+
+        order.addEvent(oe);
+
+        //Update
+        orderRepository.update(order.getOrderId(), order);
+    }
+}
