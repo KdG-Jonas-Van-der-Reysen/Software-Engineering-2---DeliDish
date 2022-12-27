@@ -7,14 +7,14 @@ import java.util.Arrays;
 //Node
 public class DishIngredient implements Dish {
 
-    private String name;
+    private final String name;
     private String description;
     private Money price;
-    private int productionTime;
-    private int maximumDeliveryTime;
+    private final int productionTime;
+    private final int maximumDeliveryTime;
     private Allergen[] allergens;
     private boolean orderable;
-    private Restaurant restaurant;
+    private final Restaurant restaurant;
 
 
     public DishIngredient(int productionTime, String name, Restaurant restaurant, int maximumDeliveryTime) {

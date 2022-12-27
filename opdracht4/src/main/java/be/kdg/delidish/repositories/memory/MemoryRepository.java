@@ -12,28 +12,28 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class MemoryRepository<K, V> implements Repository<K, V> {
-    private static Logger log = Logger.getLogger("demo.persistence.memory");
-    protected Map<K, V> data = new ConcurrentHashMap<>();
+public class MemoryRepository<V> implements Repository<V> {
+    private static final Logger log = Logger.getLogger("demo.persistence.memory");
+    protected final Map<Integer, V> data = new ConcurrentHashMap<>();
 
     public MemoryRepository() {
         log.info("new memory repository " + getClass());
     }
 
     @Override
-    public boolean update(K key, V value) {
+    public boolean update(int key, V value) {
         data.remove(key);
         return data.put(key, value)!=null;
     }
 
     @Override
-    public V insert(K key, V value) {
+    public V insert(int key, V value) {
         update(key,value);
         return value;
     }
 
     @Override
-    public V findById(K id) {
+    public V findById(int id) {
         return data.get(id);
     }
 

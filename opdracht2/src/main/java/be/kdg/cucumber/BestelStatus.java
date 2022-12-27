@@ -31,7 +31,7 @@ public enum BestelStatus {
     // Het gerecht werd te laat bezorgd
     TE_LAAT_BEZORGD(-10);
 
-    private int puntenResultaat;
+    private final int puntenResultaat;
 
     BestelStatus(int puntenResultaat) {
         this.puntenResultaat = puntenResultaat;

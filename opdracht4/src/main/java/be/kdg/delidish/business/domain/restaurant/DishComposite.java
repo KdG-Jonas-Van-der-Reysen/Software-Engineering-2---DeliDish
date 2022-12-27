@@ -6,8 +6,8 @@ import java.util.List;
 //Composite
 public class DishComposite implements Dish {
 
-    private String name;
-    private List<Dish> subdishes;
+    private final String name;
+    private final List<Dish> subdishes;
 
     public void add(Dish dish) {
         subdishes.add(dish);

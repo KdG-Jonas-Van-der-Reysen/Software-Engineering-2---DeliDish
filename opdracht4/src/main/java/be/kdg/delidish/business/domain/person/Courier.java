@@ -11,9 +11,9 @@ import java.util.List;
 public class Courier extends Person {
 
 	private Partner partner;
-	private List<DeliveryPointEvent> deliveryPointEvents;
+	private final List<DeliveryPointEvent> deliveryPointEvents;
 	private boolean isAvailable;
-	private DistanceCalculator distanceCalculator;
+	private final DistanceCalculator distanceCalculator;
 
 	public Courier(String firstName, String lastName, List<DeliveryPointEvent> deliveryPointEvents, boolean isAvailable, Position currentPosition, DistanceCalculator distanceCalculator) {
 		super(firstName, lastName);

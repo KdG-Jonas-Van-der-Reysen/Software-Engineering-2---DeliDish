@@ -6,7 +6,7 @@ import be.kdg.delidish.persistence.CourierRepository;
 public enum UserManager {
     INSTANCE;
 
-	private CourierRepository courierRepository  = CourierRepository.INSTANCE;
+	private final CourierRepository courierRepository  = CourierRepository.INSTANCE;
 
     public void orderAccepted(Courier courier) {
         courier.setAvailable(true);

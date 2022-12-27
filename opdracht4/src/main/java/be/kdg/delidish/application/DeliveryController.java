@@ -12,8 +12,8 @@ import java.util.List;
 @Controller
 public class DeliveryController {
 
-    private OrderManager orderManager;
-    private UserManager userManager;
+    private final OrderManager orderManager;
+    private final UserManager userManager;
 
     public DeliveryController(OrderManager orderManger, UserManager userManager) {
         this.orderManager = orderManger;
@@ -24,11 +24,6 @@ public class DeliveryController {
         orderManager.assignOrder(orderId, courierId, ldt);
         // TODO: Stukje weghalen want dit wordt met publisher / subscriber
         userManager.orderAccepted(courierId);
-    }
-
-    public void deliverOrder(int orderId, int courierId) {
-        //orderManager.deliverOrder(orderId, courierId);
-        //userManager.orderDelivered(userManager.getCourier(courierId));
     }
 
     public List<Order> showAvailableOrders(int courierId) {

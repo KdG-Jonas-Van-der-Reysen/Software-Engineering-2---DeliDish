@@ -7,8 +7,8 @@ import java.util.List;
 public class Restaurant {
 
 	private List<Dish> dishes;
-	private String name;
-	private ContactInfo contactInfo;
+	private final String name;
+	private final ContactInfo contactInfo;
 	private OpeningPeriod[] openingHours;
 	private String bankAccountNr;
 

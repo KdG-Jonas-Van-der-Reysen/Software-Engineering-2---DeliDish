@@ -5,6 +5,6 @@ import be.kdg.delidish.repositories.CityRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class CityMemoryRepository extends MemoryRepository<Integer, City> implements CityRepository {
+public class CityMemoryRepository extends MemoryRepository<City> implements CityRepository {
 }
 

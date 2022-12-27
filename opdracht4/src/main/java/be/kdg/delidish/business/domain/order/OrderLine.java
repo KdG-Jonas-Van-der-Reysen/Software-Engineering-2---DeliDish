@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 public class OrderLine {
 
 	private final List<Dish> dishIngredients;
-	private int quantity;
+	private final int quantity;
 	private String remark;
 
 	public OrderLine(List<Dish> dishIngredients, int quantity) {

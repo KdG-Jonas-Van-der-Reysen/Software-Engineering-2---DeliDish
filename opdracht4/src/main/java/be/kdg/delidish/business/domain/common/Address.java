@@ -2,11 +2,11 @@ package be.kdg.delidish.business.domain.common;
 
 public class Address {
 
-	private City city;
-	private String street;
-	private String number;
-	private Position position;
-	private String country;
+	private final City city;
+	private final String street;
+	private final String number;
+	private final Position position;
+	private final String country;
 
 	public Address(City city, String street, String number, Position position, String country) {
 		this.city = city;

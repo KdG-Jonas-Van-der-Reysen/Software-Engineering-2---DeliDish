@@ -5,11 +5,11 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class updateJobsVragenTest {
     @Given("Koeriers")
@@ -35,7 +35,7 @@ public class updateJobsVragenTest {
             DeliDish.bestellingen.add(new Bestelling(
                 DeliDish.tryParseInt(bestelling.get("bestelling_id")),
                 DeliDish.tryParseInt(bestelling.get("restaurant_id")),
-                DeliDish.tryParseInt(bestelling.get("leverOpdracht_id")) == 0 ? null : DeliDish.tryParseInt(bestelling.get("leverOpdracht_id"))
+                DeliDish.tryParseInt(bestelling.get("leverOpdracht_id"))
             ));
         }
     }
@@ -53,14 +53,9 @@ public class updateJobsVragenTest {
             ));
 
             // Get order by leverOpdracht.bestelling_id
-            Bestelling bestelling = DeliDish.bestellingen.stream()
+            DeliDish.bestellingen.stream()
                     .filter(b -> b.getBestellingId() == DeliDish.tryParseInt(leverOpdracht.get("bestelling_id")))
-                    .findFirst()
-                    .orElse(null);
-
-            if(bestelling != null) {
-                bestelling.setLeverOpdrachtId(DeliDish.tryParseInt(leverOpdracht.get("leverOpdracht_id")));
-            }
+                    .findFirst().ifPresent(bestelling -> bestelling.setLeverOpdrachtId(DeliDish.tryParseInt(leverOpdracht.get("leverOpdracht_id"))));
         }
     }
 
@@ -93,8 +88,8 @@ public class updateJobsVragenTest {
         System.out.println("test");
         List<Bestelling> matchingOrders = DeliDish.bestellingen.stream()
                 .peek(bestelling -> System.out.println(bestelling.getBestellingId()))
-                .filter(bestelling -> DeliDish.getStatus(bestelling.getBestellingId()).equals(BestelStatus.valueOf(status)))
-                .collect(Collectors.toList());
+                .filter(bestelling -> Objects.equals(DeliDish.getStatus(bestelling.getBestellingId()), BestelStatus.valueOf(status)))
+                .toList();
 
         assertEquals(aantalBestellingen, matchingOrders.size());
     }

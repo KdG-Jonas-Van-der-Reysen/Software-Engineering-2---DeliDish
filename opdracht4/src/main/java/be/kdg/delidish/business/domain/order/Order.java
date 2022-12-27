@@ -17,18 +17,18 @@ import java.util.Optional;
 
 public class Order implements Observable {
 
-    private List<OrderLine> orderLines;
-    private List<OrderEvent> orderEvents;
+    private final List<OrderLine> orderLines;
+    private final List<OrderEvent> orderEvents;
     private Customer customer;
-    private String description;
+    private final String description;
     private Courier courier;
     private Address deliveryAddress;
     private String deliveryInstructions;
-    private LocalDateTime timePlaced;
+    private final LocalDateTime timePlaced;
     private OrderState state;
-    private Restaurant restaurant;
+    private final Restaurant restaurant;
 
-    private List<Observer> observers;
+    private final List<Observer> observers;
 
     public Order(Restaurant restaurant, LocalDateTime timePlaced, OrderState state, List<OrderLine> orderLines, String description) {
         this.restaurant = restaurant;
@@ -83,16 +83,15 @@ public class Order implements Observable {
     }
     public int getAverageDeliveryPoints(List<Courier> applicableCouriers) {
         // Eerst alle applicable koeriers ophalen -> gemiddelde berekenen
-        return (int) applicableCouriers.stream().mapToDouble(Courier::getTotalDeliveryPoints).average().getAsDouble();
+        return (int) applicableCouriers.stream().mapToDouble(Courier::getTotalDeliveryPoints).average().orElseThrow();
     }
     public LocalDateTime getExpectedDeliveryTime() {
         // Add the production time of the longest taking dish
         LocalDateTime orderReady = timePlaced.plusMinutes(getProductionTime());
 
         // Add the delivery time of the dish that should be delivered the quickest
-        LocalDateTime orderShouldBeDelivered = orderReady.plusMinutes(getMaximumDeliveryTime());
 
-        return orderShouldBeDelivered;
+        return orderReady.plusMinutes(getMaximumDeliveryTime());
     }
     public LocalDateTime getOrderIsColdAt() {
         // Get the lowest minutes before cold
@@ -105,7 +104,7 @@ public class Order implements Observable {
         return description;
     }
     public LocalDateTime getTimeSelected() {
-        return orderEvents.stream().filter(orderEvent -> orderEvent.getState() == (EventType.ORDER_ACCEPTED)).findFirst().get().getTime();
+        return orderEvents.stream().filter(orderEvent -> orderEvent.getState() == (EventType.ORDER_ACCEPTED)).findFirst().orElseThrow().getTime();
     }
     public Courier getCourier() {
         return courier;

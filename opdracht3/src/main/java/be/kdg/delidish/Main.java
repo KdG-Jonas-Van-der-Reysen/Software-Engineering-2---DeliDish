@@ -8,7 +8,6 @@ import be.kdg.delidish.business.domain.order.Order;
 import be.kdg.delidish.business.domain.order.OrderLine;
 import be.kdg.delidish.business.domain.order.OrderState;
 import be.kdg.delidish.business.domain.person.Courier;
-import be.kdg.delidish.business.domain.person.DeliveryPointEvent;
 import be.kdg.delidish.business.domain.person.Partner;
 import be.kdg.delidish.business.domain.restaurant.Dish;
 import be.kdg.delidish.business.domain.restaurant.Restaurant;
@@ -28,7 +27,7 @@ public class Main {
                 "Frits",
                 "Zonder ballekes",
                 new Partner("zdzdf965"),
-                new ArrayList<DeliveryPointEvent>(),
+                new ArrayList<>(),
                 true,
                 new Position(1, 2)
         ));

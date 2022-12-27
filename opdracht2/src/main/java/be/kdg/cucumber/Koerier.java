@@ -1,7 +1,5 @@
 package be.kdg.cucumber;
 
-import io.cucumber.datatable.DataTable;
-
 public class Koerier {
     private int koerierId;
     private String naam;

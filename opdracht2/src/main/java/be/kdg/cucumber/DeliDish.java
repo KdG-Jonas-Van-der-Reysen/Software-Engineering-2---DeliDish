@@ -4,10 +4,10 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 public class DeliDish {
-    public static List<Koerier> koeriers = new ArrayList<>();
-    public static List<Bestelling> bestellingen = new ArrayList<>();
-    public static List<LeverOpdracht> leverOpdrachten = new ArrayList<>();
-    public static List<StatusWijziging> statusWijzigingen = new ArrayList<>();
+    public static final List<Koerier> koeriers = new ArrayList<>();
+    public static final List<Bestelling> bestellingen = new ArrayList<>();
+    public static final List<LeverOpdracht> leverOpdrachten = new ArrayList<>();
+    public static final List<StatusWijziging> statusWijzigingen = new ArrayList<>();
 
     public static BestelStatus getStatus(int bestellingId) {
         System.out.println("Running get status");

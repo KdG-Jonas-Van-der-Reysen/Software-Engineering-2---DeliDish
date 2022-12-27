@@ -13,8 +13,8 @@ import java.util.List;
 @Component("MustArriveInTime")
 public class MustArriveInTime implements AvailableOrdersStrategy {
 
-    private OrderMemoryRepository orderRepository;
-    private CourierMemoryRepository courierRepository;
+    private final OrderMemoryRepository orderRepository;
+    private final CourierMemoryRepository courierRepository;
 
     public MustArriveInTime(OrderMemoryRepository orderRepository, CourierMemoryRepository courierRepository) {
         this.orderRepository = orderRepository;

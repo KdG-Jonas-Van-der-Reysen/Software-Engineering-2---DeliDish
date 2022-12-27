@@ -8,7 +8,7 @@ import java.util.List;
 
 @Component("AllOrders")
 public class AllOrders implements AvailableOrdersStrategy {
-    private OrderMemoryRepository orderRepository;
+    private final OrderMemoryRepository orderRepository;
 
     public AllOrders(OrderMemoryRepository orderRepository) {
         this.orderRepository = orderRepository;

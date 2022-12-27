@@ -10,8 +10,8 @@ import java.util.List;
 public class DeliveryController {
 	private static DeliveryController instance;
 
-	private OrderManager orderManager;
-	private UserManager userManager;
+	private final OrderManager orderManager;
+	private final UserManager userManager;
 
 	private DeliveryController() {
 		orderManager = OrderManager.INSTANCE;

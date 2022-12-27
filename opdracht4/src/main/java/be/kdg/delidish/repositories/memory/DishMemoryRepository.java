@@ -5,6 +5,6 @@ import be.kdg.delidish.repositories.DishRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class DishMemoryRepository extends MemoryRepository<Integer, DishIngredient> implements DishRepository {
+public class DishMemoryRepository extends MemoryRepository<DishIngredient> implements DishRepository {
 }
 

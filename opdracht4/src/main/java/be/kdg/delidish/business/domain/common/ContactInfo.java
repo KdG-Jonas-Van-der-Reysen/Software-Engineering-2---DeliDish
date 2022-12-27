@@ -2,9 +2,9 @@ package be.kdg.delidish.business.domain.common;
 
 public class ContactInfo {
 
-	private Address address;
-	private String email;
-	private String tel;
+	private final Address address;
+	private final String email;
+	private final String tel;
 
 	public ContactInfo(Address address, String email, String tel) {
 		this.address = address;

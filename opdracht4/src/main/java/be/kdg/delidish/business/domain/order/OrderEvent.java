@@ -5,15 +5,13 @@ import be.kdg.delidish.business.domain.person.EventType;
 
 import java.time.LocalDateTime;
 
-import java.time.LocalDateTime;
-
 public class OrderEvent {
 
-	private DeliveryPointEvent deliveryPointEvent;
+	private final DeliveryPointEvent deliveryPointEvent;
 
-	private LocalDateTime time;
-	private EventType state;
-	private String remark;
+	private final LocalDateTime time;
+	private final EventType state;
+	private final String remark;
 
 	public OrderEvent(DeliveryPointEvent deliveryPointEvent, LocalDateTime time, EventType state, String remark) {
 		this.deliveryPointEvent = deliveryPointEvent;

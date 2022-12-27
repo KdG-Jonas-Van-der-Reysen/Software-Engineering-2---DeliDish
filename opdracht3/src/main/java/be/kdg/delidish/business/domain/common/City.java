@@ -2,9 +2,9 @@ package be.kdg.delidish.business.domain.common;
 
 public class City {
 
-	private String postalCode;
-	private String name;
-	private int attribute;
+	private final String postalCode;
+	private final String name;
+	private final int attribute;
 
 	public City(String postalCode, String name, int attribute) {
 		this.postalCode = postalCode;

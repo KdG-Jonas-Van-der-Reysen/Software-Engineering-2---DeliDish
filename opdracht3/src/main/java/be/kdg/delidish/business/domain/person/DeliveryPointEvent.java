@@ -6,16 +6,11 @@ public class DeliveryPointEvent {
 
 	private LocalDateTime time;
 	private int points;
-	private int eventType;
+	private EventType eventType;
 
-	/**
-	 * 
-	 * @param points
-	 * @param type
-	 */
 	public DeliveryPointEvent(int points, EventType type) {
-		
-		
+		this.points = points;
+		this.eventType = type;
 	}
 
 	public int getPoints() {

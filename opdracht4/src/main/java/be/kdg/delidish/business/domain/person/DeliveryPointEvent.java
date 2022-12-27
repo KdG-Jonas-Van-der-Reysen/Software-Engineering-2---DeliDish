@@ -4,7 +4,7 @@ import java.util.Objects;
 
 public class DeliveryPointEvent {
 
-	private EventType eventType;
+	private final EventType eventType;
 
 	public DeliveryPointEvent(EventType type) {
 		this.eventType = type;
@@ -13,7 +13,7 @@ public class DeliveryPointEvent {
 	@Override
 	public boolean equals(Object o) {
 		if(this == o) return true;
-		if(o == null || getClass() != o.getClass());
+		if(o == null || getClass() != o.getClass()) return false;
 		DeliveryPointEvent deliveryPointEvent = (DeliveryPointEvent) o;
 		return deliveryPointEvent.getPoints() == eventType.points && eventType == deliveryPointEvent.getEventType();
 	}

@@ -9,8 +9,8 @@ import java.util.stream.Collectors;
 
 public class OrderLine {
 
-	private List<Dish> dishes;
-	private int quantity;
+	private final List<Dish> dishes;
+	private final int quantity;
 	private String remark;
 
 	public OrderLine(List<Dish> dishes, int quantity) {

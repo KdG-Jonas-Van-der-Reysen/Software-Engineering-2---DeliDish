@@ -7,10 +7,10 @@ import java.util.List;
 public class Dish {
 
     private List<Dish> subdishes;
-    private String name;
+    private final String name;
     private String description;
     private Money price;
-    private int productionTime;
+    private final int productionTime;
     private int maximumDeliveryTime;
     private Allergen[] allergens;
     private boolean orderable;

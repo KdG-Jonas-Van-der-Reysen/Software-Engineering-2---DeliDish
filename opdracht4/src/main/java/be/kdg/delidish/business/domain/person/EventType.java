@@ -10,7 +10,7 @@ public enum EventType {
 
 
     public final int points;
-    private EventType(int points) {
+    EventType(int points) {
         this.points = points;
     }
 }

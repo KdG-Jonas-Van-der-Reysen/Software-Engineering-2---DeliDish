@@ -4,6 +4,6 @@ import be.kdg.delidish.repositories.RestaurantRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class RestaurantMemoryRepository extends MemoryRepository<Integer, Restaurant> implements RestaurantRepository {
+public class RestaurantMemoryRepository extends MemoryRepository<Restaurant> implements RestaurantRepository {
 }
 

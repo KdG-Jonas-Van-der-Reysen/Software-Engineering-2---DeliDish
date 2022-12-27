@@ -6,8 +6,8 @@ public class Person {
 
 	private int personId;
 	private ContactInfo contactInfo;
-	private String firstName;
-	private String lastName;
+	private final String firstName;
+	private final String lastName;
 
 	public Person(String firstName, String lastName, ContactInfo contactInfo) {
 		this.firstName = firstName;

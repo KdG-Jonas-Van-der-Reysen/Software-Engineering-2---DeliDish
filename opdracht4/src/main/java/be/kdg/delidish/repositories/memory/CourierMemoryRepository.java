@@ -5,6 +5,6 @@ import be.kdg.delidish.repositories.CourierRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class CourierMemoryRepository extends MemoryRepository<Integer, Courier> implements CourierRepository {
+public class CourierMemoryRepository extends MemoryRepository<Courier> implements CourierRepository {
 }
 

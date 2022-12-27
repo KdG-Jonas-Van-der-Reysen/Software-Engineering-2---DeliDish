@@ -10,7 +10,7 @@ import java.util.Map;
 public enum OrderRepository {
 	INSTANCE;
 
-	private Map<Integer, Order> map;
+	private final Map<Integer, Order> map;
 
 	OrderRepository() {
 		map = new HashMap<>();
@@ -24,11 +24,10 @@ public enum OrderRepository {
 		return new ArrayList<>(map.values());
 	}
 
-	public Order add(Order order) {
+	public void add(Order order) {
 		order.setOrderId(map.size());
 		map.put(order.getOrderId(), order);
 
-		return order;
 	}
 
 	public void update(Order order) {

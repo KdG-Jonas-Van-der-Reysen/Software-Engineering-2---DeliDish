@@ -13,15 +13,15 @@ import java.util.Optional;
 public class Order {
 
 	private int orderId;
-	private List<OrderLine> orderLines;
+	private final List<OrderLine> orderLines;
 	private List<OrderEvent> orderEvents;
 	private Customer customer;
 	private Courier courier;
 	private Address deliveryAddress;
 	private String deliveryInstructions;
-	private LocalDateTime timePlaced;
+	private final LocalDateTime timePlaced;
 	private OrderState state;
-	private Restaurant restaurant;
+	private final Restaurant restaurant;
 
 	public Order(Restaurant restaurant, LocalDateTime timePlaced, OrderState state, List<OrderLine> orderLines) {
 		this.restaurant = restaurant;
@@ -65,7 +65,7 @@ public class Order {
 
 	public int getAverageDeliveryPoints(List<Courier> applicableCouriers) {
 		// Eerst alle applicable koeriers ophalen -> gemiddelde berekenen
-		return (int) applicableCouriers.stream().mapToDouble(Courier::getTotalDeliveryPoints).average().getAsDouble();
+		return (int) applicableCouriers.stream().mapToDouble(Courier::getTotalDeliveryPoints).average().orElseThrow();
 
 	}
 

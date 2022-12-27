@@ -12,13 +12,9 @@ import java.util.List;
 public enum OrderManager {
     INSTANCE;
 
-    private OrderRepository orderRepository = OrderRepository.INSTANCE;
-    private CourierRepository courierRepository = CourierRepository.INSTANCE;
+    private final OrderRepository orderRepository = OrderRepository.INSTANCE;
+    private final CourierRepository courierRepository = CourierRepository.INSTANCE;
 
-    /**
-     * @param orderId
-     * @param courierId
-     */
     public void assignOrder(int orderId, int courierId) {
         Order order = orderRepository.get(orderId);
         Courier courier = courierRepository.get(courierId);
@@ -64,8 +60,6 @@ public enum OrderManager {
         // Alle koeriers ophalen en filteren op het volgende
         return courierRepository.getAll().stream().filter(courier -> courier.willArriveInTimeForOrder(order)).toList();
     }
-
-
 
     public void addOrder(Order order) {
         orderRepository.add(order);

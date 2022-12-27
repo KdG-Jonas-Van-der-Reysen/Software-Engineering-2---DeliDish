@@ -17,15 +17,6 @@ public class OrderStateObserver implements Observer {
 
         // Deze methode dient ervoor om op basis van de veranderde order state een deliveryPointEvent
         // toe te kennen aan de gekoppelde koerier
-
-        /** Enkele testgegevens
-         * EventType eventType = EventType.LATE_PICKUP;
-         * DeliveryPointEvent deliveryEvent = DeliveryPointEventFactory.create(eventType);
-         * trigger: order.addEvent(OrderEventFactory.create(deliveryEvent, LocalDateTime.now(), eventType, "")); --> onze trigger
-         * wat er moet gebeuren: courier.addPointEvent(deliveryEvent);
-         */
-
-
         if(observable instanceof Order) {
             courier.addPointEvent(((Order) observable).getCurrentState().getState());
         }

@@ -8,8 +8,8 @@ import java.util.*;
 
 public class Courier extends Person {
 
-	private Partner partner;
-	private List<DeliveryPointEvent> deliveryPointEvents;
+	private final Partner partner;
+	private final List<DeliveryPointEvent> deliveryPointEvents;
 	private boolean isAvailable;
 
 	public Courier(String firstName, String lastName, Partner partner, List<DeliveryPointEvent> deliveryPointEvents, boolean isAvailable, Position currentPosition) {
