@@ -31,8 +31,8 @@ public class Courier extends Person {
 	}
 
 	public void addPointEvent(EventType type) {
-		DeliveryPointEvent dpe = new DeliveryPointEvent(5,type);//TODO: 5 punten goed?
-		deliveryPointEvents.add(dpe);
+		DeliveryPointEvent deliveryPointEvent = new DeliveryPointEvent(5,type);//TODO: 5 punten goed?
+		deliveryPointEvents.add(deliveryPointEvent);
 	}
 
 	public boolean isAvailable() {

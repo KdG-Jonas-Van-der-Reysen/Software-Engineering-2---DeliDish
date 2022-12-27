@@ -22,7 +22,8 @@ public class DeliveryController {
 
     public void selectDelivery(int orderId, int courierId, LocalDateTime ldt) {
         orderManager.assignOrder(orderId, courierId, ldt);
-        userManager.orderAccepted(userManager.getCourier(courierId), ldt);
+        // TODO: Stukje weghalen want dit wordt met publisher / subscriber
+        userManager.orderAccepted(courierId);
     }
 
     public void deliverOrder(int orderId, int courierId) {

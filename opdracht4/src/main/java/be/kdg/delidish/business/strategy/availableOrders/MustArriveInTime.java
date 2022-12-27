@@ -22,8 +22,7 @@ public class MustArriveInTime implements AvailableOrdersStrategy {
     }
 
         @Override
-        public  List<Order> getAvailableOrders(int courierId) {
-
+        public List<Order> getAvailableOrders(int courierId) {
             // Eerst alle orders opvragen en filteren op status ORDER_PLACED --> Dat zijn alle orders die nog geleverd moeten worden
             List<Order> orders = orderRepository.getAll().stream().filter(order -> order.getState() == OrderState.ORDER_PLACED).toList();
 

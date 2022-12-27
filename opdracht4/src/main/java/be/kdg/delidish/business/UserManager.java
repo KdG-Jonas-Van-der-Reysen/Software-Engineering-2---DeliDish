@@ -1,12 +1,8 @@
 package be.kdg.delidish.business;
 
 import be.kdg.delidish.business.domain.person.Courier;
-import be.kdg.delidish.business.domain.person.DeliveryPointEvent;
-import be.kdg.delidish.business.domain.person.EventType;
 import be.kdg.delidish.repositories.memory.CourierMemoryRepository;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
 
 @Service
 public class UserManager {
@@ -16,10 +12,10 @@ public class UserManager {
         this.courierRepository = courierRepository;
     }
 
-    public void orderAccepted(Courier courier, LocalDateTime acceptTime) {
-        courier.setAvailable(true);
-        courier.addPointEvent(new DeliveryPointEvent(50, EventType.ORDER_ACCEPTED));
-        courierRepository.update(courier.getPersonId(), courier);
+    public void orderAccepted(int courierId) {
+        Courier courier = courierRepository.findById(courierId);
+        courier.setAvailable(false);
+        courierRepository.update(courierId, courier);
     }
 
 	public Courier getCourier(int id) {
@@ -27,7 +23,6 @@ public class UserManager {
 	}
 
 	public void addCourier(Courier courier) {
-        courier.setPersonId(courierRepository.getNextAvailableId());
-        courierRepository.insert(courier.getPersonId() ,courier);
+        courierRepository.insert(courierRepository.getNextAvailableId(), courier);
 	}
 }

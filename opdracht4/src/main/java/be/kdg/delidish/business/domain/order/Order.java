@@ -1,6 +1,9 @@
 package be.kdg.delidish.business.domain.order;
 
 import be.kdg.delidish.business.domain.common.Address;
+import be.kdg.delidish.business.domain.observer.Observable;
+import be.kdg.delidish.business.domain.observer.Observer;
+import be.kdg.delidish.business.domain.observer.OrderStateObserver;
 import be.kdg.delidish.business.domain.person.Courier;
 import be.kdg.delidish.business.domain.person.Customer;
 import be.kdg.delidish.business.domain.person.EventType;
@@ -12,9 +15,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
-public class Order {
+public class Order implements Observable {
 
-    private int orderId;
     private List<OrderLine> orderLines;
     private List<OrderEvent> orderEvents;
     private Customer customer;
@@ -26,6 +28,8 @@ public class Order {
     private OrderState state;
     private Restaurant restaurant;
 
+    private List<Observer> observers;
+
     public Order(Restaurant restaurant, LocalDateTime timePlaced, OrderState state, List<OrderLine> orderLines, String description) {
         this.restaurant = restaurant;
         this.timePlaced = timePlaced;
@@ -34,9 +38,11 @@ public class Order {
         this.description = description;
 
         orderEvents = new ArrayList<>();
+        observers = new ArrayList<>();
     }
 
     public void assignCourier(Courier courier) {
+        addObserver(new OrderStateObserver(courier));
         this.courier = courier;
     }
 
@@ -46,8 +52,13 @@ public class Order {
 
     public void addEvent(OrderEvent event) {
         orderEvents.add(event);
+
+        for (Observer observer : observers) {
+            observer.update(this);
+        }
     }
 
+    // Getters & setters
     public OrderState getState() {
         return state;
     }
@@ -56,41 +67,24 @@ public class Order {
         this.state = state;
     }
 
-    public int getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(int orderId) {
-        this.orderId = orderId;
-    }
-
-    public int getCourierId() {
-        return courier.getPersonId();
-    }
-
     public Restaurant getRestaurant() {
         return restaurant;
     }
-
     public LocalDateTime getTimePlaced() {
         return timePlaced;
     }
-
     public int getProductionTime() {
         // Get order line with the highest production time
         return orderLines.stream().mapToInt(OrderLine::getProductionTime).max().orElse(0);
     }
-
     public int getMaximumDeliveryTime() {
         // Get order line with the lowest delivery time
         return orderLines.stream().mapToInt(OrderLine::getMaximumDeliveryTime).max().orElse(0);
     }
-
     public int getAverageDeliveryPoints(List<Courier> applicableCouriers) {
         // Eerst alle applicable koeriers ophalen -> gemiddelde berekenen
         return (int) applicableCouriers.stream().mapToDouble(Courier::getTotalDeliveryPoints).average().getAsDouble();
     }
-
     public LocalDateTime getExpectedDeliveryTime() {
         // Add the production time of the longest taking dish
         LocalDateTime orderReady = timePlaced.plusMinutes(getProductionTime());
@@ -100,7 +94,6 @@ public class Order {
 
         return orderShouldBeDelivered;
     }
-
     public LocalDateTime getOrderIsColdAt() {
         // Get the lowest minutes before cold
         //orderLines.stream().map(OrderLine::getMinutesBeforeCold).forEach(System.out::println);
@@ -108,17 +101,33 @@ public class Order {
 
         return lowestMinutesBeforeCold.map(orderLine -> timePlaced.plusMinutes(orderLine.getMinutesBeforeCold())).orElse(timePlaced);
     }
-
-    @Override
-    public String toString() {
-        return " - [" + orderId + "] Order met gerechten " + orderLines;
-    }
-
     public String getDescription() {
         return description;
     }
-
     public LocalDateTime getTimeSelected() {
         return orderEvents.stream().filter(orderEvent -> orderEvent.getState() == (EventType.ORDER_ACCEPTED)).findFirst().get().getTime();
+    }
+    public Courier getCourier() {
+        return courier;
+    }
+
+    // Publisher / subcriber pattern functions
+    @Override
+    public void addObserver(Observer observer) {
+        observers.add(observer);
+    }
+    @Override
+    public void removeObserver(Observer observer) {
+        observers.remove(observer);
+    }
+
+    public OrderEvent getCurrentState() {
+        return orderEvents.get(orderEvents.size()-1);
+    }
+
+    // Tostring
+    @Override
+    public String toString() {
+        return " - Order met gerechten " + orderLines;
     }
 }

@@ -1,17 +1,12 @@
 package be.kdg.delidish.business.domain.person;
 
-import org.springframework.cglib.core.Local;
-
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class DeliveryPointEvent {
 
-	private int points;
 	private EventType eventType;
 
-	public DeliveryPointEvent(int points, EventType type) {
-		this.points = points;
+	public DeliveryPointEvent(EventType type) {
 		this.eventType = type;
 	}
 
@@ -19,8 +14,8 @@ public class DeliveryPointEvent {
 	public boolean equals(Object o) {
 		if(this == o) return true;
 		if(o == null || getClass() != o.getClass());
-		DeliveryPointEvent dpe = (DeliveryPointEvent) o;
-		return points == dpe.getPoints() && eventType == dpe.getEventType();
+		DeliveryPointEvent deliveryPointEvent = (DeliveryPointEvent) o;
+		return deliveryPointEvent.getPoints() == eventType.points && eventType == deliveryPointEvent.getEventType();
 	}
 
 
@@ -30,7 +25,7 @@ public class DeliveryPointEvent {
 	}
 
 	public int getPoints() {
-		return points;
+		return eventType.points;
 	}
 
 	public EventType getEventType() {

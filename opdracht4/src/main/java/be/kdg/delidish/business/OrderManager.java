@@ -8,6 +8,7 @@ import be.kdg.delidish.business.domain.person.Courier;
 import be.kdg.delidish.business.domain.person.Customer;
 import be.kdg.delidish.business.domain.person.DeliveryPointEvent;
 import be.kdg.delidish.business.domain.person.EventType;
+import be.kdg.delidish.business.domain.restaurant.Dish;
 import be.kdg.delidish.business.domain.restaurant.DishIngredient;
 import be.kdg.delidish.business.domain.restaurant.Restaurant;
 import be.kdg.delidish.business.factory.DeliveryPointEventFactory;
@@ -46,7 +47,7 @@ public class OrderManager {
         this.availableOrdersStrategy = availableOrdersStrategy;
     }
 
-    public void assignOrder(int orderId, int courierId, LocalDateTime ldt) {
+    public void assignOrder(int orderId, int courierId, LocalDateTime timeAssigned) {
         Order order = orderRepository.findById(orderId);
         Courier courier = courierRepository.findById(courierId);
 
@@ -58,23 +59,18 @@ public class OrderManager {
             order.setState(OrderState.ACCEPTED_BY_COURIER);
 
             // Add the order event
-            OrderEvent oe = new OrderEvent(
-                    new DeliveryPointEvent(50, EventType.ORDER_ACCEPTED),
-                    ldt,
+            OrderEvent orderEvent = OrderEventFactory.create(
+                    DeliveryPointEventFactory.create(EventType.ORDER_ACCEPTED),
+                    timeAssigned,
                     EventType.ORDER_ACCEPTED,
                     "The order has been accepted by a courier"
             );
 
-            order.addEvent(oe);
+            order.addEvent(orderEvent);
 
             // Update the order
-            orderRepository.update(order.getOrderId(), order);
+            orderRepository.update(orderId, order);
         }
-    }
-
-    public List<Order> getAllOrders() {
-        //TODO Taak 2/ Code punt 1; alle orders kunnen laten zien
-        return null;
     }
 
     public List<Order> getAvailableOrders(int courierId) {
@@ -82,8 +78,7 @@ public class OrderManager {
     }
 
     public void addOrder(Order order) {
-        order.setOrderId(orderRepository.getNextAvailableId());
-        orderRepository.insert(order.getOrderId(), order);
+        orderRepository.insert(orderRepository.getNextAvailableId(), order);
     }
 
     public void pickupOrder(int courierId, int orderId, int pickupTimeMinutes) {
@@ -96,19 +91,13 @@ public class OrderManager {
 
         if(timeOrderPickedUp.isAfter(order.getTimePlaced().plusMinutes(order.getProductionTime() + 10))) {
             EventType eventType = EventType.LATE_PICKUP;
-            DeliveryPointEvent deliveryEvent = new DeliveryPointEvent(-20, eventType);
-            order.addEvent(new OrderEvent(deliveryEvent, LocalDateTime.now(), eventType, ""));
-            courier.addPointEvent(deliveryEvent);
+            DeliveryPointEvent deliveryEvent = DeliveryPointEventFactory.create(eventType);
+            order.addEvent(OrderEventFactory.create(deliveryEvent, LocalDateTime.now(), eventType, ""));
         }else {
             EventType eventType = EventType.TIMELY_PICKUP;
-            DeliveryPointEvent deliveryEvent = new DeliveryPointEvent(50, eventType);
-            order.addEvent(new OrderEvent(deliveryEvent, LocalDateTime.now(), eventType, ""));
-            courier.addPointEvent(deliveryEvent);
+            DeliveryPointEvent deliveryEvent = DeliveryPointEventFactory.create(eventType);
+            order.addEvent(OrderEventFactory.create(deliveryEvent, LocalDateTime.now(), eventType, ""));
         }
-    }
-
-    public void deliverOrder(int orderId, int courierId) {
-
     }
 
     public void addOrderWithDishForCustomer(String description, int dishId, int minutesAgo, String orderState, int customerId) {
@@ -126,7 +115,7 @@ public class OrderManager {
             DishIngredient dishIngredient = dishRepository.findById(dishId);
 
             // Create the order line
-            List<DishIngredient> dishesInOrderLine = new ArrayList<>();
+            List<Dish> dishesInOrderLine = new ArrayList<>();
             dishesInOrderLine.add(dishIngredient);
             OrderLine orderLine = OrderLineFactory.create(dishesInOrderLine, 1);
 
@@ -141,53 +130,50 @@ public class OrderManager {
 
         // Create the order
         Order order = OrderFactory.create(restaurant, LocalDateTime.now().minusMinutes(minutesAgo), state, orderLines, description);
-        order.setOrderId(orderRepository.getNextAvailableId());
 
         // Get the customer
-        Customer cmr = customerRepository.findById(customerId);
+        Customer customer = customerRepository.findById(customerId);
 
         // Assign the customer
-        order.assignCustomer(cmr);
+        order.assignCustomer(customer);
 
         // Add order to repository
-        orderRepository.insert(order.getOrderId(), order);
+        orderRepository.insert(orderRepository.getNextAvailableId(), order);
     }
 
     public void pickupOrderAfterMinutes(int minutes, int orderId) {
         Order order = orderRepository.findById(orderId);
-        Courier courier = courierRepository.findById(order.getCourierId());
+        Courier courier = order.getCourier();
 
         // Delivery points toevoegen
         /// Calculate when the order has actually been delivered
         LocalDateTime orderActuallyDelivered = order.getTimePlaced().plusMinutes(minutes);
 
-        DeliveryPointEvent dpe;
+        DeliveryPointEvent deliveryPointEvent;
 
         if (orderActuallyDelivered.isBefore(order.getOrderIsColdAt())) {
             //// Order has been delivered on time
-            dpe = DeliveryPointEventFactory.create(50, EventType.TIMELY_DELIVERY);
+            deliveryPointEvent = DeliveryPointEventFactory.create(EventType.TIMELY_DELIVERY);
         }else {
             //// Order has been delivered too late
-            dpe = DeliveryPointEventFactory.create(-20, EventType.LATE_DELIVERY);
+            deliveryPointEvent = DeliveryPointEventFactory.create(EventType.LATE_DELIVERY);
         }
-
-        courier.addPointEvent(dpe);
 
         // Order aanpassen //
         /// Update order state
         order.setState(OrderState.DELIVERED);
 
         /// Add an event to the order, so we know when it's been delivered
-        OrderEvent oe = OrderEventFactory.create(
-                dpe,
+        OrderEvent orderEvent = OrderEventFactory.create(
+                deliveryPointEvent,
                 orderActuallyDelivered,
-                dpe.getEventType(),
+                deliveryPointEvent.getEventType(),
                 "Order has been delivered! Enjoy your meal."
         );
 
-        order.addEvent(oe);
+        order.addEvent(orderEvent);
 
         //Update
-        orderRepository.update(order.getOrderId(), order);
+        orderRepository.update(orderId, order);
     }
 }

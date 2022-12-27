@@ -29,10 +29,12 @@ public class DishIngredient implements Dish {
         return productionTime;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public Restaurant getRestaurant() {
         return restaurant;
     }

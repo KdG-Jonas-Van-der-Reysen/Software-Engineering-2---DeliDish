@@ -1,38 +1,38 @@
 package be.kdg.delidish.business.domain.order;
 
-import be.kdg.delidish.business.domain.restaurant.DishIngredient;
+import be.kdg.delidish.business.domain.restaurant.Dish;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class OrderLine {
 
-	private List<DishIngredient> dishIngredients;	//TODO: list van composites
+	private final List<Dish> dishIngredients;
 	private int quantity;
 	private String remark;
 
-	public OrderLine(List<DishIngredient> dishIngredients, int quantity) {
+	public OrderLine(List<Dish> dishIngredients, int quantity) {
 		this.dishIngredients = dishIngredients;
 		this.quantity = quantity;
 	}
 
-	public List<DishIngredient> getDishes() {
+	public List<Dish> getDishes() {
 		return dishIngredients;
 	}
 
 	public int getProductionTime() {
-		return dishIngredients.stream().mapToInt(DishIngredient::getProductionTime).max().orElse(0);
+		return dishIngredients.stream().mapToInt(Dish::getProductionTime).max().orElse(0);
 	}
 
 	public int getMaximumDeliveryTime() {
-		return dishIngredients.stream().mapToInt(DishIngredient::getMaximumDeliveryTime).min().orElse(0);
+		return dishIngredients.stream().mapToInt(Dish::getMaximumDeliveryTime).min().orElse(0);
 	}
 
 	public int getMinutesBeforeCold() {
-		return dishIngredients.stream().mapToInt(DishIngredient::getMinutesBeforeCold).min().orElse(0);
+		return dishIngredients.stream().mapToInt(Dish::getMinutesBeforeCold).min().orElse(0);
 	}
 
 	public String toString() {
-		 return dishIngredients.stream().map(DishIngredient::getName).collect(Collectors.joining( "," ));
+		 return dishIngredients.stream().map(Dish::getName).collect(Collectors.joining( "," ));
 	}
 }

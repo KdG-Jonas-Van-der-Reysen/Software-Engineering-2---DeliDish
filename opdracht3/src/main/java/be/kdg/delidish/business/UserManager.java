@@ -1,7 +1,6 @@
 package be.kdg.delidish.business;
 
 import be.kdg.delidish.business.domain.person.Courier;
-import be.kdg.delidish.business.domain.person.EventType;
 import be.kdg.delidish.persistence.CourierRepository;
 
 public enum UserManager {
@@ -11,7 +10,6 @@ public enum UserManager {
 
     public void orderAccepted(Courier courier) {
         courier.setAvailable(true);
-        courier.addPointEvent(EventType.ORDER_ACCEPTED);
         courierRepository.update(courier);
     }
 

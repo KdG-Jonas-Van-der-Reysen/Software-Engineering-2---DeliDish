@@ -111,9 +111,6 @@ public class BDDTests {
     public void customers(DataTable dataTable) {
         for (Map<String, String> map : dataTable.asMaps()) {
 
-            //TODO: courier.getPersonId() vs courierRepository.getNextAvailableId()? (Best zoveel mogelijk bullshit code vermijden?)
-            //customer.setPersonId(customerRepository.getNextAvailableId()
-
             customerRepository.insert(
                     customerRepository.getNextAvailableId(),
                     CustomerFactory.create(
@@ -164,8 +161,6 @@ public class BDDTests {
                     )
             );
 
-            //TODO: courier.getPersonId() vs courierRepository.getNextAvailableId()? (Best zoveel mogelijk bullshit code vermijden?)
-            //courier.setPersonId(courierRepository.getNextAvailableId());
             courierRepository.insert(courierRepository.getNextAvailableId(), courier);
         }
     }
@@ -197,13 +192,21 @@ public class BDDTests {
 
     @And("^Courier (\\d+) is active and has (\\d+) deliveryPoints$")
     public void courierIsActiveAndHasDeliveryPoints(int courierId, int deliveryPoints) {
+        // Check if the deliveryPoints amount is divisible by 50
+        if(deliveryPoints % 50 != 0) {
+            throw new IllegalArgumentException("DeliveryPoints " + deliveryPoints + " is not divisible by 50.");
+        }
+
         // Get courier
         Courier courier = courierRepository.findById(courierId);
 
         courier.setAvailable(true);
 
-        // Set delivery points
-        courier.addPointEvent(EventType.TIMELY_DELIVERY, deliveryPoints);
+        // Set delivery points (Add 50 points until the delivery points are all added)
+        while(courier.getTotalDeliveryPoints() < deliveryPoints) {
+            // For example if we want to add 100 deliveryPoints, we'll create two events from 50 points each
+            courier.addPointEvent(EventType.TIMELY_DELIVERY);
+        }
     }
 
     @When("^Courier (\\d+) asks for list of available deliveries$")
@@ -241,7 +244,9 @@ public class BDDTests {
     @And("^Order (\\d+) has courier (\\d+) assigned$")
     public void orderHasCourierAssigned(int orderId, int courierId) {
         Order order = orderRepository.findById(orderId);
-        assertEquals(order.getCourierId(), courierId);
+
+        Courier courier = courierRepository.findById(courierId);
+        assertEquals(order.getCourier(), courier);
     }
 
     @When("^Courier (\\d+) picks up order (\\d+) (\\d+) minutes after selection$")
@@ -275,11 +280,10 @@ public class BDDTests {
     @And("^Courier (\\d+) has an deliveryPoint record with type \"([^\"]*)\" with (-?\\d+) points$")
     public void courierHasAnDeliveryPointRecordWithTypeWithPoints(int courierId, String eventType, int deliveryPoints) {
         assertTrue(
-                courierRepository.findById(courierId).getDeliveryPointEvents().contains(
-                        DeliveryPointEventFactory.create(
-                                deliveryPoints,
-                                EventType.valueOf(eventType)
-                        )
+                courierRepository.findById(courierId).getDeliveryPointEvents().stream().anyMatch(
+                        dpe ->
+                            dpe.getPoints() == deliveryPoints &&
+                            dpe.equals(DeliveryPointEventFactory.create(EventType.valueOf(eventType)))
                 )
         );
     }

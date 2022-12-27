@@ -3,6 +3,7 @@ package be.kdg.delidish.business.domain.person;
 import be.kdg.delidish.business.adapter.DistanceCalculator;
 import be.kdg.delidish.business.domain.common.Position;
 import be.kdg.delidish.business.domain.order.Order;
+import be.kdg.delidish.business.factory.DeliveryPointEventFactory;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -32,17 +33,13 @@ public class Courier extends Person {
 		this.isAvailable = available;		
 	}
 
-	public void addPointEvent(DeliveryPointEvent dpe) {
-		deliveryPointEvents.add(dpe);
+	public void addPointEvent(DeliveryPointEvent deliveryPointEvent) {
+		deliveryPointEvents.add(deliveryPointEvent);
 	}
 
 	public void addPointEvent(EventType type) {
-		addPointEvent(type, 5); //TODO: 5 punten goed?
-	}
-
-	public void addPointEvent(EventType type, int points) {
-		DeliveryPointEvent dpe = new DeliveryPointEvent(points,type);
-		deliveryPointEvents.add(dpe);
+		DeliveryPointEvent deliveryPointEvent = DeliveryPointEventFactory.create(type);
+		deliveryPointEvents.add(deliveryPointEvent);
 	}
 
 	public boolean isAvailable() {

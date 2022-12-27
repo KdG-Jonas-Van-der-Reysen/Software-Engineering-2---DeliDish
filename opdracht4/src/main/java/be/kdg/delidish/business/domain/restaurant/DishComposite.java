@@ -5,6 +5,7 @@ import java.util.List;
 //Composite
 public class DishComposite implements Dish {
 
+    private String name;
     private List<Dish> subdishes;
 
     public void add(Dish dish) {
@@ -24,5 +25,15 @@ public class DishComposite implements Dish {
     @Override
     public int getMinutesBeforeCold() {
         return subdishes.stream().mapToInt(Dish::getMinutesBeforeCold).min().orElse(0);
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public Restaurant getRestaurant() {
+        return subdishes.get(0).getRestaurant();
     }
 }
