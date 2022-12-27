@@ -1,5 +1,6 @@
 package be.kdg.delidish.business.domain.restaurant;
 
+import java.util.ArrayList;
 import java.util.List;
 
 //Composite
@@ -10,6 +11,11 @@ public class DishComposite implements Dish {
 
     public void add(Dish dish) {
         subdishes.add(dish);
+    }
+
+    public DishComposite(String name, List<Dish> subdishes) {
+        this.name = name;
+        this.subdishes = new ArrayList<>();
     }
 
     @Override

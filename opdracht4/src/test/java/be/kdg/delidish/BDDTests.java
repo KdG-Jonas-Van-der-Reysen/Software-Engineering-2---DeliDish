@@ -169,7 +169,7 @@ public class BDDTests {
     public void dishes(DataTable dataTable) {
         for (Map<String, String> map : dataTable.asMaps()) {
 
-            DishIngredient dishIngredient = DishFactory.create(
+            DishIngredient dishIngredient = DishFactory.createIngredient(
                     Integer.parseInt(map.get("preperationTime")),
                     map.get("name"),
                     restaurantRepository.findById(Integer.parseInt(map.get("resto_id"))),
