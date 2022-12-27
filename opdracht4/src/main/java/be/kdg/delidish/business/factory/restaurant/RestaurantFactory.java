@@ -1,4 +1,4 @@
-package be.kdg.delidish.business.factory;
+package be.kdg.delidish.business.factory.restaurant;
 
 import be.kdg.delidish.business.domain.restaurant.Restaurant;
 import be.kdg.delidish.business.domain.common.ContactInfo;

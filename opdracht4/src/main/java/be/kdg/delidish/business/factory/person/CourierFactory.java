@@ -1,4 +1,4 @@
-package be.kdg.delidish.business.factory;
+package be.kdg.delidish.business.factory.person;
 
 import be.kdg.delidish.business.adapter.DistanceAdapter;
 import be.kdg.delidish.business.adapter.DistanceCalculator;

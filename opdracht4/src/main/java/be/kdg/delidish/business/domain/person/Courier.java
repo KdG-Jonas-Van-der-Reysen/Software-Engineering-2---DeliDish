@@ -3,7 +3,7 @@ package be.kdg.delidish.business.domain.person;
 import be.kdg.delidish.business.adapter.DistanceCalculator;
 import be.kdg.delidish.business.domain.common.Position;
 import be.kdg.delidish.business.domain.order.Order;
-import be.kdg.delidish.business.factory.DeliveryPointEventFactory;
+import be.kdg.delidish.business.factory.person.DeliveryPointEventFactory;
 
 import java.time.LocalDateTime;
 import java.util.List;

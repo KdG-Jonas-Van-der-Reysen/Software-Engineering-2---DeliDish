@@ -1,4 +1,4 @@
-package be.kdg.delidish.business.domain.observer;
+package be.kdg.delidish.business.observer;
 
 import be.kdg.delidish.business.domain.order.Order;
 import be.kdg.delidish.business.domain.person.Courier;

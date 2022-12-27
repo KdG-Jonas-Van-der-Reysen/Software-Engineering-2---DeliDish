@@ -6,7 +6,6 @@ import org.locationtech.spatial4j.distance.DistanceUtils;
 import org.locationtech.spatial4j.shape.Point;
 import org.locationtech.spatial4j.shape.impl.PointImpl;
 
-
 public class Position {
 
     private double lattitude;

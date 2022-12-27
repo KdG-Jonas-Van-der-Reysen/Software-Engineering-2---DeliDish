@@ -1,4 +1,4 @@
-package be.kdg.delidish.business.factory;
+package be.kdg.delidish.business.factory.order;
 
 import be.kdg.delidish.business.domain.order.Order;
 import be.kdg.delidish.business.domain.order.OrderLine;

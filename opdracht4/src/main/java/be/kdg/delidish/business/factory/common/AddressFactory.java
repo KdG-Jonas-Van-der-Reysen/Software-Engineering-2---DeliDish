@@ -1,4 +1,4 @@
-package be.kdg.delidish.business.factory;
+package be.kdg.delidish.business.factory.common;
 
 import be.kdg.delidish.business.domain.common.Address;
 import be.kdg.delidish.business.domain.common.City;

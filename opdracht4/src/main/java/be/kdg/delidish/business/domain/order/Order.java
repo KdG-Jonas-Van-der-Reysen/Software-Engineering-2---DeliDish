@@ -1,9 +1,9 @@
 package be.kdg.delidish.business.domain.order;
 
 import be.kdg.delidish.business.domain.common.Address;
-import be.kdg.delidish.business.domain.observer.Observable;
-import be.kdg.delidish.business.domain.observer.Observer;
-import be.kdg.delidish.business.domain.observer.OrderStateObserver;
+import be.kdg.delidish.business.observer.Observable;
+import be.kdg.delidish.business.observer.Observer;
+import be.kdg.delidish.business.observer.OrderStateObserver;
 import be.kdg.delidish.business.domain.person.Courier;
 import be.kdg.delidish.business.domain.person.Customer;
 import be.kdg.delidish.business.domain.person.EventType;

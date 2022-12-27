@@ -1,4 +1,4 @@
-package be.kdg.delidish.business.factory;
+package be.kdg.delidish.business.factory.person;
 
 import be.kdg.delidish.business.domain.person.DeliveryPointEvent;
 import be.kdg.delidish.business.domain.person.EventType;
